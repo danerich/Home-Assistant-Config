@@ -1,0 +1,277 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: !secret home_name
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 34
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/London
+  # Customization file
+  customize: !include customize.yaml
+
+# Enables the frontend
+frontend:
+  themes: !include_dir_merge_named themes/
+
+# Enables configuration UI
+config:
+
+http:
+  # api_password: !secret api_password
+  server_port: !secret server_port
+  cors_allowed_origins:
+    - https://google.com
+    - https://www.home-assistant.io
+  ip_ban_enabled: False
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+cloud:
+
+google_assistant:
+  project_id: !secret google_assistant_project_id
+  exposed_domains:
+    - switch
+    - light
+    - camera
+    - media_player
+    - climate
+
+system_health:
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api_key
+
+sensor:
+  - platform: darksky
+    api_key: !secret darksky_api_key
+    monitored_conditions:
+      - summary
+      - precip_probability
+      - precip_intensity
+      - precip_type
+      - temperature
+      - apparent_temperature
+      - wind_speed
+      - wind_bearing
+      - pressure
+      - cloud_cover
+      - humidity
+      - icon
+  - platform: mqtt
+    name: "Download Speed"
+    state_topic: "speedtest/result/download/"
+    unit_of_measurement: 'Mbps'
+  - platform: mqtt
+    name: "Upload Speed"
+    state_topic: "speedtest/result/upload/"
+    unit_of_measurement: 'Mbps'
+
+device_tracker:
+  - platform: bluetooth_tracker
+
+camera:
+  - platform: generic
+    name: Front Door
+    still_image_url: !secret front_door_still
+    stream_source: !secret front_door_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
+  - platform: generic
+    name: Back Garden
+    still_image_url: !secret back_garden_still
+    stream_source: !secret back_garden_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
+  - platform: generic
+    name: Drive
+    still_image_url: !secret drive_still
+    stream_source: !secret drive_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
+  - platform: generic
+    name: Side Entrance
+    still_image_url: !secret side_entrance_still
+    stream_source: !secret side_entrance_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
+  - platform: generic
+    name: Hubble Cam
+    still_image_url: !secret hubble_still
+    stream_source: !secret hubble_stream
+    username: !secret hubble_user
+    password: !secret hubble_pass
+    authentication: digest
+
+stream:
+
+zone:
+  - name: !secret carl_work_name
+    latitude: !secret carl_work_latitude
+    longitude: !secret carl_work_longitude
+    radius: 250
+    icon: mdi:school
+  - name: !secret dane_work_name
+    latitude: !secret dane_work_latitude
+    longitude: !secret dane_work_longitude
+    icon: mdi:briefcase
+  - name: !secret home_name
+    latitude: !secret home_latitude
+    longitude: !secret home_longitude
+    radius: 60
+    icon: mdi:home
+
+ios:
+
+notify:
+  - platform: pushover
+    name: pushover
+    api_key: !secret pushover_api_key
+    user_key: !secret pushover_user_key
+
+mqtt:
+  broker: core-mosquitto
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+
+media_player:
+  - platform: braviatv
+    host: !secret braviatv_ip
+
+tplink:
+  discovery: true
+
+switch:
+  - platform: mqtt
+    name: "Office Light"
+    state_topic: "stat/office_light/RESULT"
+    value_template: '{{ value_json["POWER"] }}'
+    command_topic: "cmnd/office_light/POWER"
+    availability_topic: "tele/office_light/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+  - platform: mqtt
+    name: "Living Room Big Lamp"
+    state_topic: "stat/lr_big_lamp/RESULT"
+    value_template: '{{ value_json["POWER"] }}'
+    command_topic: "cmnd/lr_big_lamp/POWER"
+    availability_topic: "tele/lr_big_lamp/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+  - platform: mqtt
+    name: "Living Room Small Lamp"
+    state_topic: "stat/lr_small_lamp/RESULT"
+    value_template: '{{ value_json["POWER"] }}'
+    command_topic: "cmnd/lr_small_lamp/POWER"
+    availability_topic: "tele/lr_small_lamp/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+  - platform: mqtt
+    name: "Hallway Lamp"
+    state_topic: "stat/lr_book_lamp/RESULT"
+    value_template: '{{ value_json["POWER"] }}'
+    command_topic: "cmnd/lr_book_lamp/POWER"
+    availability_topic: "tele/lr_book_lamp/LWT"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+# panel_iframe:
+#   grafana:
+#     title: Grafana
+#     icon: mdi:chart-timeline
+#     url: !secret grafana_url
+
+homekit:
+  auto_start: False
+  filter:
+    include_domains:
+      - light
+      - switch
+      - media_player
+      - climate
+      
+nest:
+  client_id: !secret nest_client_id
+  client_secret: !secret nest_client_secret
+  
+# sensor for if heating
+binary_sensor:
+  - platform: template
+    sensors:
+      heating_on:
+        friendly_name: "Heating On"
+        value_template: >-
+          {{ is_state('sensor.living_room_thermostat_hvac_state', 'heat')}}
+
+# Redirect output to Synology NAS Maria DB
+recorder:
+  db_url: !secret db_url
+
+#influx db
+# influxdb:
+#   host: !secret influx_host
+#   port: !secret influx_port
+#   database: !secret influx_database
+#   username: !secret influx_username
+#   password: !secret influx_password
+#   max_retries: 10
+#   default_measurement: state
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

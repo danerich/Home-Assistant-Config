@@ -1,0 +1,12 @@
+switch.hallway_lamp:
+  friendly_name: Hallway Lamp
+  icon: mdi:desk-lamp
+switch.living_room_big_lamp:
+  friendly_name: Large Lamp
+  icon: mdi:lightbulb-outline
+switch.living_room_small_lamp:
+  friendly_name: Small Lamp
+  icon: mdi:desk-lamp
+switch.office_light:
+  friendly_name: Office Light
+  icon: mdi:track-light

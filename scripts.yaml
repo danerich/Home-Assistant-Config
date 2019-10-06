@@ -1,0 +1,19 @@
+test_dash:
+  alias: 'Test Dash'
+  sequence:
+    - service: notify.ios_danes_iphone
+      data:
+        message: "Something happened at home!"
+        data:
+          attachment:
+            url: "https://github.com/home-assistant/home-assistant-assets/blob/master/logo-round-192x192.png?raw=true"
+            content-type: png
+            hide-thumbnail: false
+
+test_tts:
+  alias: 'Test TTS'
+  sequence:
+    - service: tts.google_say
+      entity_id: media_player.googlehome6320
+      data:
+        message: 'Someone is at the front door'

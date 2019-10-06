@@ -1,0 +1,50 @@
+cameras:
+    name: Cameras
+    entities:
+        - camera.drive
+        - camera.front_door
+        - camera.side_entrance
+        - camera.back_garden
+        - camera.hubble_cam
+
+weather:
+    name: Weather
+    entities:
+        - sensor.dark_sky_summary
+        - sensor.dark_sky_temperature
+        - sensor.dark_sky_humidity
+        - sensor.dark_sky_cloud_cover
+        - sensor.dark_sky_temperature
+        - sensor.dark_sky_precip_probability
+        - sensor.dark_sky_precip_intensity
+        - sensor.dark_sky_wind_speed
+
+living_lamps:
+    name: Lamps
+    entities:
+        - switch.hallway_lamp
+        - switch.living_room_small_lamp
+        - switch.living_room_big_lamp
+        
+office_light:
+    name: Office Light
+    entities:
+        - switch.office_light
+  
+presence:
+    name: Presence
+    entities:
+      - device_tracker.dane_s_iphone
+      - device_tracker.carl_rutters_iphone
+      - device_tracker.kims_iphone
+
+climate:
+    name: Climate
+    entities:
+        - climate.living_room
+        
+tv:
+    name: TV
+    entities:
+        - media_player.sony_bravia_tv
+
