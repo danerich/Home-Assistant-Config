@@ -56,8 +56,6 @@
   #     service: switch.turn_off
   #     entity_id: switch.plant_light
       
-      
-      
   - alias: 'Office light on when dark'
     hide_entity: True
     trigger:
@@ -110,7 +108,7 @@
       entity_id: switch.living_room_big_lamp
       
       
-  - alias: 'lights out when 11:30 if we are away'
+  - alias: 'lights out when 10:30 if we are away'
     hide_entity: True
     trigger:
     - platform: time
@@ -208,12 +206,7 @@
       - service: media_player.turn_off
         entity_id: media_player.sony_bravia_tv
         
-        
-        
-        
-        
-        
-## Charge Schedule 
+## Charge Schedule to on the plug to charge when the electricity is cheaper
 ## on
   - alias: 'Charge schedule on'
     hide_entity: False
@@ -256,7 +249,7 @@
           message: 'Charge schedule on'
      
      
-#Nest turn on away mode when both me and carl are away
+#Nest turn on away mode when no presence
   - alias: 'Turn on eco mode when away'
     trigger:
       platform: state
@@ -289,7 +282,8 @@
       condition: and
       conditions:
         - condition: numeric_state
-          entity_id: 'sensor.dark_sky_temperature'
+          entity_id: 'weather.dark_sky'
+          value_template: '{{ state.attributes.temperature }}'
           below: 9
     action:
       - service: climate.set_away_mode

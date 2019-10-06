@@ -78,21 +78,6 @@ weather:
     api_key: !secret darksky_api_key
 
 sensor:
-  - platform: darksky
-    api_key: !secret darksky_api_key
-    monitored_conditions:
-      - summary
-      - precip_probability
-      - precip_intensity
-      - precip_type
-      - temperature
-      - apparent_temperature
-      - wind_speed
-      - wind_bearing
-      - pressure
-      - cloud_cover
-      - humidity
-      - icon
   - platform: mqtt
     name: "Download Speed"
     state_topic: "speedtest/result/download/"
