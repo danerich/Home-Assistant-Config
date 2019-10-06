@@ -10,3 +10,7 @@ switch.living_room_small_lamp:
 switch.office_light:
   friendly_name: Office Light
   icon: mdi:track-light
+
+sensor.house_alarm:
+  friendly_name: House Alarm
+  icon: mdi-alarm-light
