@@ -2,3 +2,12 @@ secrets.yaml
 known_devices.yaml
 www
 appdaemon
+.cloud
+.storage
+tts/
+.HA_VERSION
+.homekit.state
+.ios.conf
+.uuid
+aircast.xml
+bravia.conf
