@@ -286,10 +286,10 @@
           value_template: '{{ state.attributes.temperature }}'
           below: 9
     action:
-      - service: climate.set_away_mode
+      - service: climate.set_preset_mode
         data:
           entity_id: climate.living_room
-          away_mode: 'off'
+          away_mode: 'none'
       
 
   #Doorbell
