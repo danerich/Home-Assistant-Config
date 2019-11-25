@@ -191,6 +191,8 @@
     trigger:
       - platform: mqtt
         topic: "tele/sonoffrf/RESULT"
+      - platform: webhook
+        webhook_id: all_off
     condition:
       condition: and
       conditions:

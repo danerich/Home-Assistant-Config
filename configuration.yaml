@@ -81,11 +81,11 @@ sensor:
   - platform: mqtt
     name: "Download Speed"
     state_topic: "speedtest/result/download/"
-    unit_of_measurement: 'Mbps'
+    unit_of_measurement: "Mbps"
   - platform: mqtt
     name: "Upload Speed"
     state_topic: "speedtest/result/upload/"
-    unit_of_measurement: 'Mbps'
+    unit_of_measurement: "Mbps"
   - platform: imap_email_content
     server: imap.gmail.com
     name: house_alarm
@@ -243,11 +243,11 @@ homekit:
       - switch
       - media_player
       - climate
-      
+
 nest:
   client_id: !secret nest_client_id
   client_secret: !secret nest_client_secret
-  
+
 # sensor for if heating
 binary_sensor:
   - platform: template
