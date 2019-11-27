@@ -62,6 +62,8 @@ tts:
 
 cloud:
 
+mobile_app:
+
 google_assistant:
   project_id: !secret google_assistant_project_id
   exposed_domains:
