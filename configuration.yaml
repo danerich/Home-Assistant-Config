@@ -135,13 +135,6 @@ camera:
     username: !secret cctv_username
     password: !secret cctv_password
     authentication: digest
-  - platform: generic
-    name: Hubble Cam
-    still_image_url: !secret hubble_still
-    stream_source: !secret hubble_stream
-    username: !secret hubble_user
-    password: !secret hubble_pass
-    authentication: digest
 
 stream:
 
