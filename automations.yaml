@@ -106,6 +106,24 @@
     action:
       service: switch.turn_on
       entity_id: switch.living_room_big_lamp
+
+# Xmas light on when its dark
+  - alias: 'Xmas light on when its dark'
+    hide_entity: True
+    trigger:
+      platform: numeric_state
+      entity_id: sun.sun
+      value_template: '{{ state.attributes.elevation }}'
+      below: -2.5
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.rf_plug_1
+      - delay: 00:00:02
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.rf_plug_2
+      - delay: 00:00:02
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.rf_plug_3
       
       
   - alias: 'lights out when 10:30 if we are away'
@@ -118,11 +136,20 @@
       entity_id: 'group.presence'
       state: 'not_home'
     action:
-      service: switch.turn_off
-      entity_id: 
-      - switch.hallway_lamp
-      - switch.living_room_small_lamp
-      - switch.living_room_big_lamp
+      - service: switch.turn_off
+        entity_id: 
+        - switch.hallway_lamp
+        - switch.living_room_small_lamp
+        - switch.living_room_big_lamp
+      # xmas
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_1
+      - delay: 00:00:02
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_2
+      - delay: 00:00:02
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_3
       
       
   - alias: "Power state on HA start-up"
@@ -157,7 +184,36 @@
       - delay: 00:05
       - service: homekit.start
       
-  - alias: 'Big Lamp Toggle'
+  # - alias: 'Big Lamp Toggle'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: mqtt
+  #       topic: "tele/sonoffrf/RESULT"
+  #   condition:
+  #     condition: and
+  #     conditions:
+  #       - condition: template
+  #         value_template: '{{ trigger.payload_json.RfReceived.Data == "004264" }}'
+  #   action:
+  #     service: switch.toggle
+  #     entity_id: switch.living_room_big_lamp
+      
+  # - alias: 'Small Lamp Toggle'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: mqtt
+  #       topic: "tele/sonoffrf/RESULT"
+  #   condition:
+  #     condition: and
+  #     conditions:
+  #       - condition: template
+  #         value_template: '{{ trigger.payload_json.RfReceived.Data == "004261" }}'
+  #   action:
+  #     service: switch.toggle
+  #     entity_id: switch.living_room_small_lamp
+      
+      
+  - alias: 'Everything off on button press'
     initial_state: true
     trigger:
       - platform: mqtt
@@ -166,38 +222,7 @@
       condition: and
       conditions:
         - condition: template
-          value_template: '{{ trigger.payload_json.RfReceived.Data == "004264" }}'
-    action:
-      service: switch.toggle
-      entity_id: switch.living_room_big_lamp
-      
-  - alias: 'Small Lamp Toggle'
-    initial_state: true
-    trigger:
-      - platform: mqtt
-        topic: "tele/sonoffrf/RESULT"
-    condition:
-      condition: and
-      conditions:
-        - condition: template
-          value_template: '{{ trigger.payload_json.RfReceived.Data == "004261" }}'
-    action:
-      service: switch.toggle
-      entity_id: switch.living_room_small_lamp
-      
-      
-  - alias: 'Everything Off'
-    initial_state: true
-    trigger:
-      - platform: mqtt
-        topic: "tele/sonoffrf/RESULT"
-      - platform: webhook
-        webhook_id: all_off
-    condition:
-      condition: and
-      conditions:
-        - condition: template
-          value_template: '{{ trigger.payload_json.RfReceived.Data == "7923E1" }}'
+          value_template: '{{ trigger.payload_json.RfReceived.Data == "CC44B1" }}'
     action:
       - service: switch.turn_off
         entity_id: 
@@ -207,6 +232,46 @@
         - switch.office_light
       - service: media_player.turn_off
         entity_id: media_player.sony_bravia_tv
+      # xmas
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_1
+      - delay: 00:00:02
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_2
+      - delay: 00:00:02
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.rf_plug_3
+
+#Bedside lamp switch's
+  - alias: 'Dane bedside lamp toggle'
+    initial_state: true
+    trigger:
+      - platform: mqtt
+        topic: "tele/sonoffrf/RESULT"
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: '{{ trigger.payload_json.RfReceived.Data == "7923E1" }}'
+    action:
+      - service: switch.toggle
+        entity_id: 
+        - switch.danes_bedside_lamp
+
+  - alias: 'Carl bedside lamp toggle'
+    initial_state: true
+    trigger:
+      - platform: mqtt
+        topic: "tele/sonoffrf/RESULT"
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: '{{ trigger.payload_json.RfReceived.Data == "ED08B1" }}'
+    action:
+      - service: switch.toggle
+        entity_id: 
+        - switch.carls_bedside_lamp
         
 ## Charge Schedule to on the plug to charge when the electricity is cheaper
 ## on
@@ -320,4 +385,54 @@
       data:
         message: 'Someone is at the front door'
 
+
+# RF Plug automation
+  - id: rf_plug_1_mqtt_publish_switch_rf
+    alias: Publish switch change via MQTT to RF rf_plug_1
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rf_plug_1
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: >
+            {%- if trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "on" -%}
+                    cmnd/sonoffrf/RfKey1
+            {%- elif trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "off" -%}
+                    cmnd/sonoffrf/RfKey2
+            {% endif %}
+          payload: ''
+  - id: rf_plug_2_mqtt_publish_switch_rf
+    alias: Publish switch change via MQTT to RF rf_plug_2
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rf_plug_2
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: >
+            {%- if trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "on" -%}
+                    cmnd/sonoffrf/RfKey3
+            {%- elif trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "off" -%}
+                    cmnd/sonoffrf/RfKey4
+            {% endif %}
+          payload: ''
+  - id: rf_plug_3_mqtt_publish_switch_rf
+    alias: Publish switch change via MQTT to RF rf_plug_3
+    initial_state: "on"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.rf_plug_3
+    action:
+      - service: mqtt.publish
+        data_template:
+          topic: >
+            {%- if trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "on" -%}
+                    cmnd/sonoffrf/RfKey5
+            {%- elif trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "off" -%}
+                    cmnd/sonoffrf/RfKey6
+            {% endif %}
+          payload: ''
       
