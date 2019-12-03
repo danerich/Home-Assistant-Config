@@ -427,7 +427,7 @@
       - service: climate.set_preset_mode
         data:
           entity_id: climate.living_room
-          away_mode: 'none'
+          preset_mode: 'none'
       
 
   #Doorbell
