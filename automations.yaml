@@ -335,8 +335,10 @@
   - alias: 'Bedlights off in morning'
     hide_entity: True
     trigger:
-      platform: time
-      at: "07:30:00"
+      platform: numeric_state
+      entity_id: sun.sun
+      value_template: '{{ state.attributes.elevation }}'
+      above: -2.5
     action:
       - service: switch.turn_off
         entity_id: 
