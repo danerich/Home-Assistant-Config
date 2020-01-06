@@ -1,0 +1,108 @@
+# Xmas light on when its dark
+- alias: 'Xmas light on when its dark'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -2.5
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.rf_plug_1
+    - delay: 00:00:02
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.rf_plug_2
+    - delay: 00:00:02
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.rf_plug_3
+
+# Xmas lights off if we are not home
+- alias: 'Xmas lights off 10:30 if we are away'
+  hide_entity: True
+  trigger:
+  - platform: time
+    at: '22:35:00'
+  condition:
+  - condition: state
+    entity_id: 'group.presence'
+    state: 'not_home'
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_1
+    - delay: 00:00:02
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_2
+    - delay: 00:00:02
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_3
+
+# Xmas lights off button press
+- alias: 'Xmas lights off on button press'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "CC44B1" }}'
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_1
+    - delay: 00:00:02
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_2
+    - delay: 00:00:02
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.rf_plug_3
+
+# RF Plug automation
+- id: rf_plug_1_mqtt_publish_switch_rf
+  alias: Publish switch change via MQTT to RF rf_plug_1
+  initial_state: "on"
+  trigger:
+    - platform: state
+      entity_id: input_boolean.rf_plug_1
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: >
+          {%- if trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "on" -%}
+                  cmnd/sonoffrf/RfKey1
+          {%- elif trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "off" -%}
+                  cmnd/sonoffrf/RfKey2
+          {% endif %}
+        payload: ''
+- id: rf_plug_2_mqtt_publish_switch_rf
+  alias: Publish switch change via MQTT to RF rf_plug_2
+  initial_state: "on"
+  trigger:
+    - platform: state
+      entity_id: input_boolean.rf_plug_2
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: >
+          {%- if trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "on" -%}
+                  cmnd/sonoffrf/RfKey3
+          {%- elif trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "off" -%}
+                  cmnd/sonoffrf/RfKey4
+          {% endif %}
+        payload: ''
+- id: rf_plug_3_mqtt_publish_switch_rf
+  alias: Publish switch change via MQTT to RF rf_plug_3
+  initial_state: "on"
+  trigger:
+    - platform: state
+      entity_id: input_boolean.rf_plug_3
+  action:
+    - service: mqtt.publish
+      data_template:
+        topic: >
+          {%- if trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "on" -%}
+                  cmnd/sonoffrf/RfKey5
+          {%- elif trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "off" -%}
+                  cmnd/sonoffrf/RfKey6
+          {% endif %}
+        payload: ''

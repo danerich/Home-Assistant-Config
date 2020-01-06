@@ -1,0 +1,120 @@
+- alias: 'Start HomeKit'
+  hide_entity: True
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - delay: 00:05
+    - service: homekit.start
+
+## Charge Schedule to on the plug to charge when the electricity is cheaper
+## on
+- alias: 'Charge schedule on'
+  hide_entity: False
+  initial_state: false
+  trigger:
+  - platform: time
+    at: '01:30:00'
+  action:
+    service: switch.turn_on
+    entity_id: 
+    - switch.tplink_1
+#off
+- alias: 'Charge schedule off'
+  hide_entity: True
+  trigger:
+  - platform: time
+    at: '03:30:00'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.tplink_1
+    - service: automation.turn_off
+      entity_id: automation.charge_schedule_on
+## turn on the automation 
+- alias: 'Charge schedule trigger'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "DDF8A1" }}'
+  action:
+    - service: automation.turn_on
+      entity_id: automation.charge_schedule_on
+    - service: tts.google_say
+      entity_id: media_player.googlehome6320
+      data:
+        message: 'Charge schedule on'
+    
+    
+#Nest turn on away mode when no presence
+- alias: 'Turn on eco mode when away'
+  trigger:
+    platform: state
+    entity_id: group.presence
+    to: 'not_home'
+  action:
+    - service: climate.set_preset_mode
+      data:
+        entity_id: climate.living_room
+        preset_mode: 'Away and Eco'
+        
+#Nest turn on away mode off when we get home
+- alias: 'Turn off eco mode when home'
+  trigger:
+    platform: state
+    entity_id: group.presence
+    to: 'home'
+  action:
+    - service: climate.set_preset_mode
+      data:
+        entity_id: climate.living_room
+        preset_mode: 'none'
+        
+#Nest turn off away mode to pre-heat
+- alias: 'Turn off eco mode to pre heat'
+  trigger:
+    platform: time
+    at: "16:00:00"
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: 'weather.dark_sky'
+        value_template: '{{ state.attributes.temperature }}'
+        below: 9
+  action:
+    - service: climate.set_preset_mode
+      data:
+        entity_id: climate.living_room
+        preset_mode: 'none'
+    
+
+#Doorbell
+- alias: 'Doorbell'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "09B0B1" }}'
+  action:
+  - service: notify.ios_danes_iphone
+    data:
+      message: "Someone is at the front door"
+      data:
+        attachment:
+          content-type: jpeg
+        push:
+          category: camera
+        entity_id: camera.front_door
+  - service: tts.google_say
+    entity_id: media_player.googlehome6320
+    data:
+      message: 'Someone is at the front door'

@@ -1,0 +1,215 @@
+- alias: 'Office light on when dark'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -2.5
+  action:
+    service: switch.turn_on
+    entity_id: switch.office_light
+- alias: 'Office light off when 10:30'
+  hide_entity: True
+  trigger:
+  - platform: time
+    at: '22:30:00'
+  action:
+    service: switch.turn_off
+    entity_id: switch.office_light
+    
+    
+- alias: 'LR Small lamp on when dark'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -1.0
+  action:
+    service: switch.turn_on
+    entity_id: switch.living_room_small_lamp
+- alias: 'LR Bookcase lamp on when darker'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -1.5
+  action:
+    service: switch.turn_on
+    entity_id: switch.hallway_lamp
+- alias: 'LR big lamp on when darkerer'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -2.5
+  action:
+    service: switch.turn_on
+    entity_id: switch.living_room_big_lamp
+
+    
+    
+- alias: 'lights out when 10:30 if we are away'
+  hide_entity: True
+  trigger:
+  - platform: time
+    at: '22:35:00'
+  condition:
+  - condition: state
+    entity_id: 'group.presence'
+    state: 'not_home'
+  action:
+    - service: switch.turn_off
+      entity_id: 
+      - switch.hallway_lamp
+      - switch.living_room_small_lamp
+      - switch.living_room_big_lamp
+    
+    
+- alias: "Power state on HA start-up"
+  hide_entity: True
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/office_light/power1"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/lr_big_lamp/power1"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/lr_small_lamp/power1"
+        payload: ""
+    - service: mqtt.publish
+      data:
+        topic: "cmnd/lr_book_lamp/power1"
+        payload: ""
+
+- alias: 'Everything off on button press'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "CC44B1" }}'
+  action:
+    - service: switch.turn_off
+      entity_id: 
+      - switch.hallway_lamp
+      - switch.living_room_small_lamp
+      - switch.living_room_big_lamp
+      - switch.office_light
+    - service: media_player.turn_off
+      entity_id: media_player.sony_bravia_tv
+
+#Bedside lamp switch's
+- alias: 'Dane bedside lamp toggle'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "7923E1" }}'
+  action:
+    - service: switch.toggle
+      entity_id: 
+      - switch.danes_bedside_lamp
+
+- alias: 'Carl bedside lamp toggle'
+  initial_state: true
+  trigger:
+    - platform: mqtt
+      topic: "tele/sonoffrf/RESULT"
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "ED08B1" }}'
+  action:
+    - service: switch.toggle
+      entity_id: 
+      - switch.carls_bedside_lamp
+
+## Turn on bedside light if home and its dark out.
+## weekday
+## is 5:45am
+## is dark out
+## device_tracker.carl_rutters_iphone  device_tracker.dane_s_iphone
+- alias: 'Dane bedlight on in morning'
+  hide_entity: True
+  trigger:
+    platform: time
+    at: "05:45:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: -2.5
+      - condition: state
+        entity_id: 'device_tracker.dane_s_iphone'
+        state: 'home'
+      - condition: time
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+  action:
+    - service: switch.turn_on
+      entity_id: 
+      - switch.danes_bedside_lamp
+
+- alias: 'Carl bedlight on in morning'
+  hide_entity: True
+  trigger:
+    platform: time
+    at: "05:45:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: -2.5
+      - condition: state
+        entity_id: 'device_tracker.carl_rutters_iphone'
+        state: 'home'
+      - condition: time
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+  action:
+    - service: switch.turn_on
+      entity_id: 
+      - switch.carls_bedside_lamp
+
+- alias: 'Bedlights off in morning'
+  hide_entity: True
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    above: -2.5
+  action:
+    - service: switch.turn_off
+      entity_id: 
+      - switch.danes_bedside_lamp
+      - switch.carls_bedside_lamp
