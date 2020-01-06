@@ -107,23 +107,6 @@
       service: switch.turn_on
       entity_id: switch.living_room_big_lamp
 
-# Xmas light on when its dark
-  - alias: 'Xmas light on when its dark'
-    hide_entity: True
-    trigger:
-      platform: numeric_state
-      entity_id: sun.sun
-      value_template: '{{ state.attributes.elevation }}'
-      below: -2.5
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.rf_plug_1
-      - delay: 00:00:02
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.rf_plug_2
-      - delay: 00:00:02
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.rf_plug_3
       
       
   - alias: 'lights out when 10:30 if we are away'
@@ -141,15 +124,6 @@
         - switch.hallway_lamp
         - switch.living_room_small_lamp
         - switch.living_room_big_lamp
-      # xmas
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_1
-      - delay: 00:00:02
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_2
-      - delay: 00:00:02
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_3
       
       
   - alias: "Power state on HA start-up"
@@ -232,15 +206,6 @@
         - switch.office_light
       - service: media_player.turn_off
         entity_id: media_player.sony_bravia_tv
-      # xmas
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_1
-      - delay: 00:00:02
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_2
-      - delay: 00:00:02
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.rf_plug_3
 
 #Bedside lamp switch's
   - alias: 'Dane bedside lamp toggle'
@@ -432,7 +397,7 @@
           preset_mode: 'none'
       
 
-  #Doorbell
+#Doorbell
   - alias: 'Doorbell'
     initial_state: true
     trigger:
@@ -458,54 +423,5 @@
       data:
         message: 'Someone is at the front door'
 
-
-# RF Plug automation
-  - id: rf_plug_1_mqtt_publish_switch_rf
-    alias: Publish switch change via MQTT to RF rf_plug_1
-    initial_state: "on"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.rf_plug_1
-    action:
-      - service: mqtt.publish
-        data_template:
-          topic: >
-            {%- if trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "on" -%}
-                    cmnd/sonoffrf/RfKey1
-            {%- elif trigger.entity_id == "input_boolean.rf_plug_1" and states.input_boolean.rf_plug_1.state == "off" -%}
-                    cmnd/sonoffrf/RfKey2
-            {% endif %}
-          payload: ''
-  - id: rf_plug_2_mqtt_publish_switch_rf
-    alias: Publish switch change via MQTT to RF rf_plug_2
-    initial_state: "on"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.rf_plug_2
-    action:
-      - service: mqtt.publish
-        data_template:
-          topic: >
-            {%- if trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "on" -%}
-                    cmnd/sonoffrf/RfKey3
-            {%- elif trigger.entity_id == "input_boolean.rf_plug_2" and states.input_boolean.rf_plug_2.state == "off" -%}
-                    cmnd/sonoffrf/RfKey4
-            {% endif %}
-          payload: ''
-  - id: rf_plug_3_mqtt_publish_switch_rf
-    alias: Publish switch change via MQTT to RF rf_plug_3
-    initial_state: "on"
-    trigger:
-      - platform: state
-        entity_id: input_boolean.rf_plug_3
-    action:
-      - service: mqtt.publish
-        data_template:
-          topic: >
-            {%- if trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "on" -%}
-                    cmnd/sonoffrf/RfKey5
-            {%- elif trigger.entity_id == "input_boolean.rf_plug_3" and states.input_boolean.rf_plug_3.state == "off" -%}
-                    cmnd/sonoffrf/RfKey6
-            {% endif %}
-          payload: ''
+!include xmas-automations.yaml
       
