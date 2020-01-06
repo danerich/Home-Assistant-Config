@@ -280,6 +280,11 @@ recorder:
 #   max_retries: 10
 #   default_measurement: state
 
+alarm_control_panel:
+  - platform: yale_smart_alarm
+    username: !secret yale_alarm_user
+    password: !secret yale_alarm_password
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
