@@ -102,6 +102,11 @@ sensor:
       {% elif 'Disarm' in body %}
         disarm
       {% endif %}
+  - platform: mqtt
+    name: "Power Usage"
+    state_topic: "powerMeter"
+    unit_of_measurement: "KW"
+    value_template: "{{ value_json.power }}"
 
 device_tracker:
   - platform: bluetooth_tracker
