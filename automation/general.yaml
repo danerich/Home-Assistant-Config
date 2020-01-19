@@ -126,11 +126,13 @@
       at: '07:30:00'
   action:
     - service: utility_meter.select_tariff
-      entity_id: utility_meter.daily_energy
-      tariff: peak
+      data:
+        entity_id: utility_meter.daily_energy
+        tariff: peak
     - service: utility_meter.next_tariff
-      entity_id: utility_meter.monthly_energy
-      tariff: peak
+      data:
+        entity_id: utility_meter.monthly_energy
+        tariff: peak
 
 - alias: 'Tarrif Switch Offpeak'
   trigger:
@@ -138,8 +140,10 @@
       at: '00:30:00'
   action:
     - service: utility_meter.select_tariff
-      entity_id: utility_meter.daily_energy
-      tariff: offpeak
+      data:
+        entity_id: utility_meter.daily_energy
+        tariff: offpeak
     - service: utility_meter.next_tariff
-      entity_id: utility_meter.monthly_energy
-      tariff: offpeak
+      data:
+        entity_id: utility_meter.monthly_energy
+        tariff: offpeak
