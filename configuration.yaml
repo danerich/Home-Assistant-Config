@@ -81,6 +81,11 @@ weather:
 
 sensor:
   - platform: mqtt
+    name: "Power Usage"
+    state_topic: "powermeter/result/"
+    unit_of_measurement: "Kw"
+    value_template: "{{ value_json.power }}"
+  - platform: mqtt
     name: "Download Speed"
     state_topic: "speedtest/result/download/"
     unit_of_measurement: "Mbps"
@@ -102,11 +107,6 @@ sensor:
       {% elif 'Disarm' in body %}
         disarm
       {% endif %}
-  - platform: mqtt
-    name: "Power Usage"
-    state_topic: "powerMeter"
-    unit_of_measurement: "KW"
-    value_template: "{{ value_json.power }}"
 
 device_tracker:
   - platform: bluetooth_tracker
