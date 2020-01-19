@@ -45,6 +45,12 @@ conversation:
 
 # Enables support for tracking state changes over time
 history:
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - updater
+      - camera
 
 # View all events in a logbook
 logbook:
