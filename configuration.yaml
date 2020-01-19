@@ -93,20 +93,6 @@ sensor:
     name: "Upload Speed"
     state_topic: "speedtest/result/upload/"
     unit_of_measurement: "Mbps"
-  - platform: imap_email_content
-    server: imap.gmail.com
-    name: house_alarm
-    port: 993
-    username: !secret gmail_address
-    password: !secret gmail_ot_passowrd
-    senders:
-      - !secret alarm_email
-    value_template: >-
-      {% if 'Arm' in body %}
-        armed
-      {% elif 'Disarm' in body %}
-        disarm
-      {% endif %}
 
 utility_meter:
   daily_energy:
