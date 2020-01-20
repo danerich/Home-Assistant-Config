@@ -120,7 +120,7 @@
       message: 'Someone is at the front door'
 
 #Power meter tariff switch
-- alias: 'Tarrif Switch Peak'
+- alias: 'Tariff Switch Peak'
   trigger:
     - platform: time
       at: '07:30:00'
@@ -129,12 +129,12 @@
       data:
         entity_id: utility_meter.daily_energy
         tariff: peak
-    - service: utility_meter.next_tariff
+    - service: utility_meter.select_tariff
       data:
         entity_id: utility_meter.monthly_energy
         tariff: peak
 
-- alias: 'Tarrif Switch Offpeak'
+- alias: 'Tariff Switch Offpeak'
   trigger:
     - platform: time
       at: '00:30:00'
@@ -143,7 +143,7 @@
       data:
         entity_id: utility_meter.daily_energy
         tariff: offpeak
-    - service: utility_meter.next_tariff
+    - service: utility_meter.select_tariff
       data:
         entity_id: utility_meter.monthly_energy
         tariff: offpeak
