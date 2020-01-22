@@ -87,10 +87,15 @@ weather:
 
 sensor:
   - platform: mqtt
-    name: "Power Usage"
+    name: "Power Usage Kw"
     state_topic: "powermeter/result/"
     unit_of_measurement: "Kw"
-    value_template: "{{ value_json.power }}"
+    value_template: "{{ value_json.power_kw }}"
+  - platform: mqtt
+    name: "Power Usage Kwh"
+    state_topic: "powermeter/result/"
+    unit_of_measurement: "Kwh"
+    value_template: "{{ value_json.power_kwh }}"
   - platform: mqtt
     name: "Download Speed"
     state_topic: "speedtest/result/download/"
@@ -102,13 +107,13 @@ sensor:
 
 utility_meter:
   daily_energy:
-    source: sensor.power_usage
+    source: sensor.power_usage_kwh
     cycle: daily
     tariffs:
     - peak
     - offpeak
   monthly_energy:
-    source: sensor.power_usage
+    source: sensor.power_usage_kwh
     cycle: monthly
     tariffs:
     - peak
