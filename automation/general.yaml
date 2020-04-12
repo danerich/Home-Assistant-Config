@@ -147,3 +147,36 @@
     #   data:
     #     entity_id: utility_meter.monthly_energy
     #     tariff: night
+
+- alias: 'Run Snapshot Backup'
+  trigger:
+    platform: time
+    at: "01:00:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - sun
+  action:
+    - service: hassio.snapshot_full
+      data_template:
+        name: >
+          Backup_{{ now().strftime('%d-%m-%YT%H-%M-%S') }}
+
+- alias: 'Run Dropbox Backup'
+  trigger:
+    platform: time
+    at: "02:00:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - sun
+  action:
+    service: hassio.addon_stdin
+    data:
+      addon: 7be23ff5_dropbox_sync
+      input:
+        command: upload
