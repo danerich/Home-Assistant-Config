@@ -1,5 +1,4 @@
 - alias: 'Start HomeKit'
-  hide_entity: True
   trigger:
     - platform: homeassistant
       event: start
@@ -10,7 +9,6 @@
 ## Charge Schedule to on the plug to charge when the electricity is cheaper
 ## on
 - alias: 'Charge schedule on'
-  hide_entity: False
   initial_state: false
   trigger:
   - platform: time
@@ -21,7 +19,6 @@
     - switch.tplink_1
 #off
 - alias: 'Charge schedule off'
-  hide_entity: True
   trigger:
   - platform: time
     at: '03:30:00'

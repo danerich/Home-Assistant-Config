@@ -1,5 +1,4 @@
 - alias: 'Office light on when dark'
-  hide_entity: True
   trigger:
     platform: numeric_state
     entity_id: sun.sun
@@ -9,7 +8,6 @@
     service: switch.turn_on
     entity_id: switch.office_light
 - alias: 'Office light off when 10:30'
-  hide_entity: True
   trigger:
   - platform: time
     at: '22:30:00'
@@ -19,7 +17,6 @@
     
     
 - alias: 'LR Small lamp on when dark'
-  hide_entity: True
   trigger:
     platform: numeric_state
     entity_id: sun.sun
@@ -29,7 +26,6 @@
     service: switch.turn_on
     entity_id: switch.living_room_small_lamp
 - alias: 'LR Bookcase lamp on when darker'
-  hide_entity: True
   trigger:
     platform: numeric_state
     entity_id: sun.sun
@@ -39,7 +35,6 @@
     service: switch.turn_on
     entity_id: switch.hallway_lamp
 - alias: 'LR big lamp on when darkerer'
-  hide_entity: True
   trigger:
     platform: numeric_state
     entity_id: sun.sun
@@ -52,7 +47,6 @@
     
     
 - alias: 'lights out when 10:30 if we are away'
-  hide_entity: True
   trigger:
   - platform: time
     at: '22:35:00'
@@ -69,7 +63,6 @@
     
     
 - alias: "Power state on HA start-up"
-  hide_entity: True
   trigger:
     platform: homeassistant
     event: start
@@ -148,7 +141,6 @@
 ## is dark out
 ## device_tracker.carl_rutters_iphone  device_tracker.dane_s_iphone
 - alias: 'Dane bedlight on in morning'
-  hide_entity: True
   trigger:
     platform: time
     at: "05:45:00"
@@ -175,7 +167,6 @@
       - switch.danes_bedside_lamp
 
 - alias: 'Carl bedlight on in morning'
-  hide_entity: True
   trigger:
     platform: time
     at: "05:45:00"
@@ -202,7 +193,6 @@
       - switch.carls_bedside_lamp
 
 - alias: 'Bedlights off in morning'
-  hide_entity: True
   trigger:
     platform: numeric_state
     entity_id: sun.sun
