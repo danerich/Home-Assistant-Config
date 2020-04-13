@@ -115,13 +115,18 @@
     data:
       message: 'Someone is at the front door'
 
-#Power Meter ###      
+#### Power Meter ####
 
 #Power meter tariff switch
+
+## Summer 1:30 - 08:30
+## Winter 00:30 - 07:30
+## use UTC time so daylight saving will not effect this switch over
+
 - alias: 'Tariff Switch Peak'
   trigger:
-    - platform: time
-      at: '07:30:00'
+    - platform: template
+      value_template: "{{ is_state('sensor.time_utc', '07:30') }}"
   action:
     - service: utility_meter.select_tariff
       data:
@@ -129,8 +134,8 @@
         tariff: day
 - alias: 'Tariff Switch Offpeak'
   trigger:
-    - platform: time
-      at: '00:30:00'
+    - platform: template
+      value_template: "{{ is_state('sensor.time_utc', '00:30') }}"
   action:
     - service: utility_meter.select_tariff
       data:
@@ -151,7 +156,7 @@
       message: "Today's energy use was {{ states('sensor.total_energy') }} kWh. Costing £{{ states('sensor.energy_total_cost') }}"
   - service: notify.energy_log
     data_template:
-      message: "{{ now() }},{{ states('sensor.energy_daily_day') }},{{ states('sensor.energy_day_cost') }},{{ states('sensor.energy_daily_night') }},{{ states('sensor.energy_night_cost') }},{{ states('sensor.total_energy') }},{{ states('sensor.energy_total_cost') }}"
+      message: "{{ states('sensor.date')  }},{{ states('sensor.energy_daily_day') }},{{ states('sensor.energy_day_cost') }},{{ states('sensor.energy_daily_night') }},{{ states('sensor.energy_night_cost') }},{{ states('sensor.total_energy') }},{{ states('sensor.energy_total_cost') }}"
 
 #Backups
 - alias: 'Run Snapshot Backup'
