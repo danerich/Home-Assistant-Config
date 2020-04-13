@@ -88,7 +88,6 @@
       data:
         entity_id: climate.living_room
         preset_mode: 'none'
-    
 
 #Doorbell
 - alias: 'Doorbell'
@@ -116,6 +115,8 @@
     data:
       message: 'Someone is at the front door'
 
+#Power Meter ###      
+
 #Power meter tariff switch
 - alias: 'Tariff Switch Peak'
   trigger:
@@ -126,11 +127,6 @@
       data:
         entity_id: utility_meter.energy_daily
         tariff: day
-    # - service: utility_meter.select_tariff
-    #   data:
-    #     entity_id: utility_meter.monthly_energy
-    #     tariff: day
-
 - alias: 'Tariff Switch Offpeak'
   trigger:
     - platform: time
@@ -140,11 +136,24 @@
       data:
         entity_id: utility_meter.energy_daily
         tariff: night
-    # - service: utility_meter.select_tariff
-    #   data:
-    #     entity_id: utility_meter.monthly_energy
-    #     tariff: night
 
+#Save daily energy use to CSV file
+#Date, Energy Day, Energy Day Cost, Energy Night, Energy Night Cost, Energy Total Day, Energy Total Day Cost
+- id: daily_energy_use_message
+  alias: 'Daily Energy Use Message'
+  trigger:
+    platform: time
+    at: '23:59:50'
+  action:
+  - service: notify.mobile_app_dane_s_iphone
+    data_template:
+      title: 'Energy Use ⚡️'
+      message: "Today's energy use was {{ states('sensor.total_energy') }} kWh. Costing £{{ states('sensor.energy_total_cost') }}"
+  - service: notify.energy_log
+    data_template:
+      message: "{{ now() }},{{ states('sensor.energy_daily_day') }},{{ states('sensor.energy_day_cost') }},{{ states('sensor.energy_daily_night') }},{{ states('sensor.energy_night_cost') }},{{ states('sensor.total_energy') }},{{ states('sensor.energy_total_cost') }}"
+
+#Backups
 - alias: 'Run Snapshot Backup'
   trigger:
     platform: time
@@ -154,12 +163,16 @@
     conditions:
       - condition: time
         weekday:
-        - sun
+        - mon
   action:
     - service: hassio.snapshot_full
       data_template:
         name: >
           Backup_{{ now().strftime('%d-%m-%YT%H-%M-%S') }}
+    - service: notify.mobile_app_dane_s_iphone
+      data_template:
+        title: 'Backup Snapshot'
+        message: "The Snapshot 💾 backup has run."
 
 - alias: 'Run Dropbox Backup'
   trigger:
@@ -170,10 +183,14 @@
     conditions:
       - condition: time
         weekday:
-        - sun
+        - mon
   action:
-    service: hassio.addon_stdin
-    data:
-      addon: 7be23ff5_dropbox_sync
-      input:
-        command: upload
+    - service: hassio.addon_stdin
+      data:
+        addon: 7be23ff5_dropbox_sync
+        input:
+          command: upload
+    - service: notify.mobile_app_dane_s_iphone
+      data_template:
+        title: 'Backup Dropbox'
+        message: "The Dropbox 📦 backup has run."

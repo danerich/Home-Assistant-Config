@@ -104,6 +104,48 @@ sensor:
     name: "Upload Speed"
     state_topic: "speedtest/result/upload/"
     unit_of_measurement: "Mbps"
+  
+  # Power Meter Totals
+  # Day 16.840
+  # Night 7.592
+
+  - platform: template
+    sensors:
+      energy_day_cost:
+        friendly_name: 'Energy Day Cost'
+        entity_id:
+          - sensor.energy_daily_day
+        value_template: "{{ (states('sensor.energy_daily_day')|float * 0.1684|float)|round(3) }}"
+        unit_of_measurement: "£"
+
+  - platform: template
+    sensors:
+      energy_night_cost:
+        friendly_name: 'Energy Night Cost'
+        entity_id:
+          - sensor.energy_daily_night
+        value_template: "{{ (states('sensor.energy_daily_night')|float * 0.07592|float)|round(3) }}"
+        unit_of_measurement: "£"
+
+  - platform: template
+    sensors:
+      energy_total_cost:
+        friendly_name: 'Energy Total Cost'
+        entity_id:
+          - sensor.energy_night_cost
+          - sensor.energy_day_cost
+        value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float)|round(3) }}"
+        unit_of_measurement: "£"
+
+  - platform: template
+    sensors:
+      total_energy:
+        friendly_name: 'Total Energy Used Today'
+        entity_id:
+          - sensor.total_energy_day
+          - sensor.total_energy_night
+        value_template: "{{ states('sensor.energy_daily_day')|float + states('sensor.energy_daily_night')|float }}"
+        unit_of_measurement: "kWh"
 
 utility_meter:
   energy_daily:
@@ -112,12 +154,6 @@ utility_meter:
     tariffs:
     - day
     - night
-#   monthly_energy:
-#     source: sensor.power_usage_kwh
-#     cycle: monthly
-#     tariffs:
-#     - peak
-#     - offpeak
 
 device_tracker:
   - platform: bluetooth_tracker
@@ -177,6 +213,10 @@ notify:
     name: pushover
     api_key: !secret pushover_api_key
     user_key: !secret pushover_user_key
+  - platform: file
+    name: energy_log
+    filename: /config/www/csv_logs/energy_log.csv
+    timestamp: false
 
 mqtt:
   broker: core-mosquitto
