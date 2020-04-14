@@ -43,21 +43,36 @@ discovery:
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
+# Redirect output to Synology NAS Maria DB
+recorder:
+  purge_keep_days: 5
+  db_url: !secret db_url
+  exclude:
+    domains:
+      - automation
+      - updater
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.time_utc
+
 # Enables support for tracking state changes over time
 history:
-  purge_keep_days: 5
   exclude:
     domains:
       - automation
       - weblink
       - updater
       - camera
+      - script
+      - remote
     entities:
-      - sun.sun # Don't record sun data
-      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
-      - sensor.date
-    event_types:
-      - call_service # Don't record service calls
+      - sensor.ssid
+      - sensor.sim_1
+      - binary_sensor.updater
+      - sensor.last_update_trigger
+      - sensor.17_the_glade_eta
+      - binary_sensor.remote_ui
 
 # View all events in a logbook
 logbook:
@@ -93,19 +108,12 @@ weather:
     api_key: !secret darksky_api_key
 
 shell_command:
-  push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("climate.living_room", "heat") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
+  push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
 
 sensor:
   - platform: time_date
     display_options:
-    - 'time'
-    - 'date'
-    - 'date_time'
-    - 'date_time_utc'
-    - 'date_time_iso'
-    - 'time_date'
     - 'time_utc'
-    - 'beat'
   - platform: mqtt
     name: "Power Usage kW"
     state_topic: "powermeter/result/"
@@ -343,9 +351,6 @@ binary_sensor:
         value_template: >-
           {{ is_state('sensor.living_room_thermostat_hvac_state', 'heat')}}
 
-# Redirect output to Synology NAS Maria DB
-recorder:
-  db_url: !secret db_url
 
 #influx db
 # influxdb:
