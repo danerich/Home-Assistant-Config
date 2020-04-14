@@ -114,6 +114,7 @@ sensor:
   - platform: time_date
     display_options:
     - 'time_utc'
+    - 'date'
   - platform: mqtt
     name: "Power Usage kW"
     state_topic: "powermeter/result/"
@@ -132,6 +133,13 @@ sensor:
     name: "Upload Speed"
     state_topic: "speedtest/result/upload/"
     unit_of_measurement: "Mbps"
+  - platform: history_stats
+    name: Heating Time On Today
+    entity_id: binary_sensor.heating_on
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0, minute=0, second=0) }}'
+    end: '{{ now() }}'
   
   # Power Meter Totals (p)
   # Day 16.840
@@ -245,6 +253,10 @@ notify:
   - platform: file
     name: energy_log
     filename: /config/www/csv_logs/energy_log.csv
+    timestamp: false
+  - platform: file
+    name: heating_log
+    filename: /config/www/csv_logs/heating_log.csv
     timestamp: false
 
 mqtt:
