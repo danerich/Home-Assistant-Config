@@ -49,12 +49,11 @@ recorder:
   db_url: !secret db_url
   exclude:
     domains:
-      - automation
       - updater
     entities:
-      - sun.sun # Don't record sun data
       - sensor.last_boot # Comes from 'systemmonitor' sensor platform
       - sensor.time_utc
+      - sensor.date
 
 # Enables support for tracking state changes over time
 history:
@@ -67,12 +66,14 @@ history:
       - script
       - remote
     entities:
+      - sun.sun
       - sensor.ssid
       - sensor.sim_1
       - binary_sensor.updater
       - sensor.last_update_trigger
       - sensor.17_the_glade_eta
       - binary_sensor.remote_ui
+      - sensor.power_use_last_update
 
 # View all events in a logbook
 logbook:
@@ -183,6 +184,12 @@ sensor:
           - sensor.total_energy_night
         value_template: "{{ states('sensor.energy_daily_day')|float + states('sensor.energy_daily_night')|float }}"
         unit_of_measurement: "kWh"
+
+  - platform: template
+    sensors:
+      power_use_last_update:
+        entity_id: sensor.time_utc
+        value_template: "{{ relative_time(states.sensor.power_usage_kw.last_updated) }}"
 
 utility_meter:
   energy_daily:

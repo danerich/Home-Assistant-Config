@@ -219,32 +219,44 @@
   action:
     - service: shell_command.push_temp
 
-## Set Theme
-- alias: 'Set theme at startup'
+
+## test power use sensor 
+- alias: 'Notify if power use sensor state unchanged'
   trigger:
-    platform: homeassistant
-    event: start
+    platform: template
+    value_template: "{% if is_state('sensor.power_use_last_update', '5 minutes') %}true{% endif %}"
   action:
-    service: frontend.set_theme
-    data:
-      name: One Dark Theme
-## Dark and light
-# - alias: 'Set HA theme for day and night'
+    - service: notify.mobile_app_dane_s_iphone
+      data_template:
+        title: 'Power Usage Sensor Down'
+        message: "The power usage sensor was not updated for 5 minutes"
+
+## Set Theme
+# - alias: 'Set theme at startup'
 #   trigger:
-#     - platform: homeassistant
-#       event: start
-#     - platform: state
-#       entity_id: sun.sun
-#       to: above_horizon
-#     - platform: state
-#       entity_id: sun.sun
-#       to: below_horizon
+#     platform: homeassistant
+#     event: start
 #   action:
-#     - service_template: frontend.set_theme
-#       data_template:
-#         name: >
-#           {% if states.sun.sun.state == "above_horizon" %}
-#             One Light Theme
-#           {% else %}
-#             One Dark Theme
-#           {% endif %}
+#     service: frontend.set_theme
+#     data:
+#       name: One Dark Theme
+## Dark and light
+- alias: 'Set HA theme for day and night'
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: sun.sun
+      to: above_horizon
+    - platform: state
+      entity_id: sun.sun
+      to: below_horizon
+  action:
+    - service_template: frontend.set_theme
+      data_template:
+        name: >
+          {% if states.sun.sun.state == "above_horizon" %}
+            One Light Theme
+          {% else %}
+            One Dark Theme
+          {% endif %}
