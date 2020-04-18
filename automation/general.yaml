@@ -42,7 +42,7 @@
     - service: automation.turn_on
       entity_id: automation.charge_schedule_on
     - service: tts.google_say
-      entity_id: media_player.googlehome6320
+      entity_id: group.media_players
       data:
         message: 'Charge schedule on'
     
@@ -111,7 +111,7 @@
           category: camera
         entity_id: camera.front_door
   - service: tts.google_say
-    entity_id: media_player.googlehome6320
+    entity_id: group.media_players
     data:
       message: 'Someone is at the front door'
 
@@ -224,12 +224,12 @@
 - alias: 'Notify if power use sensor state unchanged'
   trigger:
     platform: template
-    value_template: "{% if is_state('sensor.power_use_last_update', '5 minutes') %}true{% endif %}"
+    value_template: "{% if is_state('sensor.power_use_last_update', '30 minutes') %}true{% endif %}"
   action:
     - service: notify.mobile_app_dane_s_iphone
       data_template:
         title: 'Power Usage Sensor Down'
-        message: "The power usage sensor was not updated for 5 minutes"
+        message: "The power usage sensor was not updated for 30 minutes"
 
 ## Set Theme
 # - alias: 'Set theme at startup'

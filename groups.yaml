@@ -36,3 +36,10 @@ tv:
     entities:
         - media_player.sony_bravia_tv
 
+media_players:
+    name: Media Players
+    entities:
+        - media_player.googlehome6320 #Living Room
+        - media_player.googlehome7605 #Kitchen
+        - media_player.lenovosmartclock7727 #Bedroom
+
