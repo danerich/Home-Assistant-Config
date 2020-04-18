@@ -182,14 +182,7 @@
         weekday:
         - mon
   action:
-    - service: hassio.snapshot_full
-      data_template:
-        name: >
-          Backup_{{ now().strftime('%d-%m-%YT%H-%M-%S') }}
-    - service: notify.mobile_app_dane_s_iphone
-      data_template:
-        title: 'Backup Snapshot'
-        message: "The Snapshot 💾 backup has run."
+    - service: script.create_snapshot
 
 - alias: 'Run Dropbox Backup'
   trigger:
