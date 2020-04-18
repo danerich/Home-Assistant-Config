@@ -74,6 +74,14 @@ history:
       - sensor.17_the_glade_eta
       - binary_sensor.remote_ui
       - sensor.power_use_last_update
+      - group.cameras
+      - group.climate
+      - binary_sensor.living_room_thermostat_online
+      - binary_sensor.living_room_thermostat_is_using_emergency_heat
+      - binary_sensor.living_room_thermostat_is_locked
+      - binary_sensor.living_room_thermostat_fan
+      - sensor.date
+      - sensor.power_use_last_update
 
 # View all events in a logbook
 logbook:
@@ -107,6 +115,8 @@ system_health:
 weather:
   - platform: darksky
     api_key: !secret darksky_api_key
+  - platform: metoffice
+    api_key: !secret met_office_key
 
 shell_command:
   push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
