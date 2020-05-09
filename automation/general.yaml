@@ -225,31 +225,31 @@
         message: "The power usage sensor was not updated for 30 minutes"
 
 ## Set Theme
-# - alias: 'Set theme at startup'
-#   trigger:
-#     platform: homeassistant
-#     event: start
-#   action:
-#     service: frontend.set_theme
-#     data:
-#       name: One Dark Theme
-## Dark and light
-- alias: 'Set HA theme for day and night'
+- alias: 'Set theme at startup'
   trigger:
-    - platform: homeassistant
-      event: start
-    - platform: state
-      entity_id: sun.sun
-      to: above_horizon
-    - platform: state
-      entity_id: sun.sun
-      to: below_horizon
+    platform: homeassistant
+    event: start
   action:
-    - service_template: frontend.set_theme
-      data_template:
-        name: >
-          {% if states.sun.sun.state == "above_horizon" %}
-            One Light Theme
-          {% else %}
-            One Dark Theme
-          {% endif %}
+    service: frontend.set_theme
+    data:
+      name: One Dark Theme
+## Dark and light
+# - alias: 'Set HA theme for day and night'
+#   trigger:
+#     - platform: homeassistant
+#       event: start
+#     - platform: state
+#       entity_id: sun.sun
+#       to: above_horizon
+#     - platform: state
+#       entity_id: sun.sun
+#       to: below_horizon
+#   action:
+#     - service_template: frontend.set_theme
+#       data_template:
+#         name: >
+#           {% if states.sun.sun.state == "above_horizon" %}
+#             One Light Theme
+#           {% else %}
+#             One Dark Theme
+#           {% endif %}
