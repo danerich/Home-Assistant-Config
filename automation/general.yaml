@@ -37,7 +37,7 @@
     condition: and
     conditions:
       - condition: template
-        value_template: '{{ trigger.payload_json.RfReceived.Data == "DDF8A1" }}'
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "09B0B1" }}'
   action:
     - service: automation.turn_on
       entity_id: automation.charge_schedule_on
@@ -89,17 +89,18 @@
         entity_id: climate.living_room
         preset_mode: 'none'
 
-#Doorbell
-- alias: 'Doorbell'
-  initial_state: true
+
+## Doorbell Notification
+## google home without sound
+- alias: 'Doorbell Notification'
   trigger:
-    - platform: mqtt
-      topic: "tele/sonoffrf/RESULT"
+      - platform: mqtt
+        topic: "tele/sonoffrf/RESULT"
   condition:
     condition: and
     conditions:
       - condition: template
-        value_template: '{{ trigger.payload_json.RfReceived.Data == "09B0B1" }}'
+        value_template: '{{ trigger.payload_json.RfReceived.Data == "DDF8A1" }}'
   action:
   - service: notify.ios_danes_iphone
     data:
@@ -110,10 +111,43 @@
         push:
           category: camera
         entity_id: camera.front_door
-  - service: tts.google_say
-    entity_id: group.media_players
+  - service: notify.mobile_app_carl_rutters_iphone
     data:
-      message: 'Someone is at the front door'
+      message: "Someone is at the front door"
+      data:
+        attachment:
+          content-type: jpeg
+        push:
+          category: camera
+        entity_id: camera.front_door
+  - service: media_player.volume_set
+    entity_id: media_player.googlehome7605
+    data:
+      volume_level: 0.0
+  - service: media_player.turn_off
+    entity_id: media_player.googlehome7605
+  - service: media_player.turn_on
+    entity_id: media_player.googlehome7605
+  - delay:
+        seconds: 1
+  - service: media_player.volume_set
+    entity_id: media_player.googlehome7605
+    data:
+      volume_level: 0.9
+  - service: media_player.play_media
+    entity_id: media_player.googlehome7605
+    data:
+      media_content_id: 'https://ha.danerich.co.uk/local/sounds/Jetsons-doorbell.mp3'
+      media_content_type: music
+  - delay:
+        seconds: 6
+  - service: media_player.volume_set
+    entity_id: media_player.googlehome7605
+    data:
+      volume_level: 0.3
+  - service: media_player.turn_off
+    entity_id: media_player.googlehome7605
+
 
 #### Power Meter ####
 
