@@ -73,7 +73,6 @@ history:
       - sensor.last_update_trigger
       - sensor.17_the_glade_eta
       - binary_sensor.remote_ui
-      - sensor.power_use_last_update
       - group.cameras
       - group.climate
       - binary_sensor.living_room_thermostat_online
@@ -81,7 +80,6 @@ history:
       - binary_sensor.living_room_thermostat_is_locked
       - binary_sensor.living_room_thermostat_fan
       - sensor.date
-      - sensor.power_use_last_update
 
 # View all events in a logbook
 logbook:
@@ -160,6 +158,10 @@ sensor:
   # Night 7.592
   # Standing Change 20.558
 
+  ############# Daily
+
+  #Day Cost
+
   - platform: template
     sensors:
       energy_day_cost:
@@ -168,6 +170,8 @@ sensor:
           - sensor.energy_daily_day
         value_template: "{{ (states('sensor.energy_daily_day')|float * 0.1684|float)|round(3) }}"
         unit_of_measurement: "£"
+
+  #Night Cost
 
   - platform: template
     sensors:
@@ -178,6 +182,8 @@ sensor:
         value_template: "{{ (states('sensor.energy_daily_night')|float * 0.07592|float)|round(3) }}"
         unit_of_measurement: "£"
 
+  #Total Cost
+
   - platform: template
     sensors:
       energy_total_cost:
@@ -185,24 +191,69 @@ sensor:
         entity_id:
           - sensor.energy_night_cost
           - sensor.energy_day_cost
-        value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float)|round(3) }}"
+        value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float + 0.20558 )|round(3) }}"
         unit_of_measurement: "£"
+
+  #Total Energy Used
 
   - platform: template
     sensors:
       total_energy:
         friendly_name: 'Total Energy Used Today'
         entity_id:
-          - sensor.total_energy_day
-          - sensor.total_energy_night
+          - sensor.energy_daily_day
+          - sensor.energy_daily_night
         value_template: "{{ states('sensor.energy_daily_day')|float + states('sensor.energy_daily_night')|float }}"
         unit_of_measurement: "kWh"
 
+  ############# Monthly 
+
+  #Day Cost
+
   - platform: template
     sensors:
-      power_use_last_update:
-        entity_id: sensor.time_utc
-        value_template: "{{ relative_time(states.sensor.power_usage_kw.last_updated) }}"
+      monthly_energy_day_cost:
+        friendly_name: 'Monthly Energy Day Cost'
+        entity_id:
+          - sensor.energy_monthly_day
+        value_template: "{{ (states('sensor.energy_monthly_day')|float * 0.1684|float)|round(3) }}"
+        unit_of_measurement: "£"
+
+  #Night Cost
+
+  - platform: template
+    sensors:
+      monthly_energy_night_cost:
+        friendly_name: 'Monthly Energy Night Cost'
+        entity_id:
+          - sensor.energy_monthly_night
+        value_template: "{{ (states('sensor.energy_monthly_night')|float * 0.07592|float)|round(3) }}"
+        unit_of_measurement: "£"
+
+  #Total Cost
+
+  - platform: template
+    sensors:
+      monthly_energy_total_cost:
+        friendly_name: 'Monthly Energy Total Cost'
+        entity_id:
+          - sensor.monthly_energy_night_cost
+          - sensor.monthly_energy_day_cost
+        value_template: "{{ (states('sensor.monthly_energy_night_cost')|float + states('sensor.monthly_energy_day_cost')|float  + (0.20558 * 30.4375))|round(3) }}"
+        unit_of_measurement: "£"
+
+  #Total Energy Used
+
+  - platform: template
+    sensors:
+      monthly_total_energy:
+        friendly_name: 'Total Energy Used Today'
+        entity_id:
+          - sensor.energy_monthly_day
+          - sensor.energy_monthly_night
+        value_template: "{{ states('sensor.energy_monthly_day')|float + states('sensor.energy_monthly_night')|float }}"
+        unit_of_measurement: "kWh"
+
 
   # - platform: integration
   #   source: sensor.power_meter
@@ -210,6 +261,12 @@ sensor:
 
 utility_meter:
   energy_daily:
+    source: sensor.daily_energy
+    cycle: daily
+    tariffs:
+    - day
+    - night
+  energy_monthly:
     source: sensor.daily_energy
     cycle: daily
     tariffs:
@@ -358,12 +415,6 @@ switch:
     payload_available: "Online"
     payload_not_available: "Offline"
     retain: false
-
-# panel_iframe:
-#   grafana:
-#     title: Grafana
-#     icon: mdi:chart-timeline
-#     url: !secret grafana_url
 
 homekit:
   auto_start: False

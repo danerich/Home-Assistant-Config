@@ -149,49 +149,6 @@
     entity_id: media_player.googlehome7605
 
 
-#### Power Meter ####
-
-#Power meter tariff switch
-
-## Summer 1:30 - 08:30
-## Winter 00:30 - 07:30
-## use UTC time so daylight saving will not effect this switch over
-
-- alias: 'Tariff Switch Peak'
-  trigger:
-    - platform: template
-      value_template: "{{ is_state('sensor.time_utc', '07:30') }}"
-  action:
-    - service: utility_meter.select_tariff
-      data:
-        entity_id: utility_meter.energy_daily
-        tariff: day
-- alias: 'Tariff Switch Offpeak'
-  trigger:
-    - platform: template
-      value_template: "{{ is_state('sensor.time_utc', '00:30') }}"
-  action:
-    - service: utility_meter.select_tariff
-      data:
-        entity_id: utility_meter.energy_daily
-        tariff: night
-
-#Save daily energy use to CSV file
-#Date, Energy Day, Energy Day Cost, Energy Night, Energy Night Cost, Energy Total Day, Energy Total Day Cost
-- id: daily_energy_use_message
-  alias: 'Daily Energy Use Message'
-  trigger:
-    platform: time
-    at: '23:59:50'
-  action:
-  - service: notify.mobile_app_dane_s_iphone
-    data_template:
-      title: 'Energy Use ⚡️'
-      message: "Today's energy use was {{ states('sensor.total_energy') }} kWh. Costing £{{ states('sensor.energy_total_cost') }}"
-  - service: notify.energy_log
-    data_template:
-      message: "{{ states('sensor.date')  }},{{ states('sensor.energy_daily_day') }},{{ states('sensor.energy_day_cost') }},{{ states('sensor.energy_daily_night') }},{{ states('sensor.energy_night_cost') }},{{ states('sensor.total_energy') }},{{ states('sensor.energy_total_cost') }}"
-
 #Heating use to CSV file
 #Date, Heating Time
 - id: daily_heating_use
@@ -217,7 +174,6 @@
         - mon
   action:
     - service: script.create_snapshot
-
 - alias: 'Run Dropbox Backup'
   trigger:
     platform: time
@@ -239,6 +195,7 @@
         title: 'Backup Dropbox'
         message: "The Dropbox 📦 backup has run."
 
+
 - alias: 'Apple Watch Glance'
   trigger:
   - minutes: /30
@@ -246,17 +203,6 @@
   action:
     - service: shell_command.push_temp
 
-
-## test power use sensor 
-# - alias: 'Notify if power use sensor state unchanged'
-#   trigger:
-#     platform: template
-#     value_template: "{% if is_state('sensor.power_use_last_update', '30 minutes') %}true{% endif %}"
-#   action:
-#     - service: notify.mobile_app_dane_s_iphone
-#       data_template:
-#         title: 'Power Usage Sensor Down'
-#         message: "The power usage sensor was not updated for 30 minutes"
 
 ## Set Theme
 - alias: 'Set theme at startup'
@@ -267,23 +213,3 @@
     service: frontend.set_theme
     data:
       name: One Dark Theme
-## Dark and light
-# - alias: 'Set HA theme for day and night'
-#   trigger:
-#     - platform: homeassistant
-#       event: start
-#     - platform: state
-#       entity_id: sun.sun
-#       to: above_horizon
-#     - platform: state
-#       entity_id: sun.sun
-#       to: below_horizon
-#   action:
-#     - service_template: frontend.set_theme
-#       data_template:
-#         name: >
-#           {% if states.sun.sun.state == "above_horizon" %}
-#             One Light Theme
-#           {% else %}
-#             One Dark Theme
-#           {% endif %}
