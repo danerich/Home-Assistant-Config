@@ -248,15 +248,15 @@
 
 
 ## test power use sensor 
-- alias: 'Notify if power use sensor state unchanged'
-  trigger:
-    platform: template
-    value_template: "{% if is_state('sensor.power_use_last_update', '30 minutes') %}true{% endif %}"
-  action:
-    - service: notify.mobile_app_dane_s_iphone
-      data_template:
-        title: 'Power Usage Sensor Down'
-        message: "The power usage sensor was not updated for 30 minutes"
+# - alias: 'Notify if power use sensor state unchanged'
+#   trigger:
+#     platform: template
+#     value_template: "{% if is_state('sensor.power_use_last_update', '30 minutes') %}true{% endif %}"
+#   action:
+#     - service: notify.mobile_app_dane_s_iphone
+#       data_template:
+#         title: 'Power Usage Sensor Down'
+#         message: "The power usage sensor was not updated for 30 minutes"
 
 ## Set Theme
 - alias: 'Set theme at startup'
