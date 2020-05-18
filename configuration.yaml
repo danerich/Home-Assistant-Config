@@ -254,6 +254,16 @@ sensor:
         value_template: "{{ states('sensor.energy_monthly_day')|float + states('sensor.energy_monthly_night')|float }}"
         unit_of_measurement: "kWh"
 
+  - platform: template
+    sensors:
+      outdoor_temperature:
+        friendly_name: 'Outdoor Temperature'
+        entity_id:
+          - weather.met_office_colchester
+        value_template: "{{ state_attr('weather.met_office_colchester', 'temperature')|float }}"
+        unit_of_measurement: "°C"
+
+
 
   # - platform: integration
   #   source: sensor.power_meter
