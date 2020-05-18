@@ -278,7 +278,7 @@ utility_meter:
     - night
   energy_monthly:
     source: sensor.daily_energy
-    cycle: daily
+    cycle: monthly
     tariffs:
     - day
     - night
