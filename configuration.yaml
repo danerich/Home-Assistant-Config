@@ -113,8 +113,6 @@ system_health:
 weather:
   - platform: darksky
     api_key: !secret darksky_api_key
-  - platform: metoffice
-    api_key: !secret met_office_key
   - platform: openweathermap
     api_key: !secret open_weather_map_key
     mode: freedaily
