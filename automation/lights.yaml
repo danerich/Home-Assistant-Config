@@ -40,7 +40,8 @@
     service: light.turn_on
     data:
       entity_id: light.rgb_light
-      brightness: 255
+      rgb_color: [255, 218, 108]
+      brightness: 200
       transition: 15
 
 - alias: 'LR Bookcase lamp on when darker'
