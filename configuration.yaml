@@ -358,7 +358,11 @@ media_player:
     host: !secret braviatv_ip
 
 tplink:
-  discovery: true
+  discovery: false
+  switch:
+    - host: !secret tp_schedule_plug
+    - host: !secret tp_dane_bed_light
+    - host: !secret tp_carl_bed_light
 
 input_boolean:
   rf_plug_1:
