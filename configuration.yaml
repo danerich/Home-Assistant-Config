@@ -313,6 +313,13 @@ camera:
     username: !secret cctv_username
     password: !secret cctv_password
     authentication: digest
+  - platform: generic
+    name: Front Garden
+    still_image_url: !secret front_garden_still
+    stream_source: !secret front_garden_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
 
 stream:
 
