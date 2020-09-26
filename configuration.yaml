@@ -150,6 +150,16 @@ sensor:
     type: time
     start: '{{ now().replace(hour=0, minute=0, second=0) }}'
     end: '{{ now() }}'
+
+  - platform: mqtt
+    name: "Stairway Light Power"
+    state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/power"
+    unit_of_measurement: "W"
+
+  - platform: mqtt
+    name: "Stairway Light Temperature"
+    state_topic: "shellies/shellydimmer2-E09806966F1F/temperature"
+    unit_of_measurement: "°C"
   
   # Power Meter Totals (p)
   # Day 16.840
@@ -384,6 +394,17 @@ input_boolean:
     name: RF Plug 3
     initial: off
     icon: mdi:toggle-switch
+
+light:
+  - platform: mqtt
+    schema: template
+    name:  Stairway Light
+    state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/status"
+    state_template: '{% if value_json.ison %} on {% else %} off {% endif %}'
+    command_topic: "shellies/shellydimmer2-E09806966F1F/light/0/set"
+    command_on_template: '{"turn": "on"{% if brightness is defined %}, "brightness": {{(brightness | float * 0.3882 + 1) | round(0)}}{% endif %}}'
+    command_off_template: '{"turn": "off"}'
+    brightness_template: '{{ (value_json.brightness | float * 2.55) | round(0) }}'
 
 switch:
   - platform: mqtt

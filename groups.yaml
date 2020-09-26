@@ -26,6 +26,17 @@ presence:
       - device_tracker.carl_rutters_iphone
       - device_tracker.kims_iphone
 
+all_lights:
+    name: All Lights
+    entities:
+        - switch.hallway_lamp
+        - switch.living_room_small_lamp
+        - switch.living_room_big_lamp
+        - switch.office_light
+        - light.stairway_light
+        - switch.danes_bedside_lamp
+        - switch.carls_bedside_lamp
+
 climate:
     name: Climate
     entities:

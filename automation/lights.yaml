@@ -41,7 +41,7 @@
     data:
       entity_id: light.rgb_light
       rgb_color: [255, 218, 108]
-      brightness: 200
+      brightness: 255
       transition: 15
 
 - alias: 'LR Bookcase lamp on when darker'
@@ -53,17 +53,21 @@
   action:
     service: switch.turn_on
     entity_id: switch.hallway_lamp
-- alias: 'LR big lamp on when darkerer'
+
+- alias: 'Lights on when darkerer'
   trigger:
     platform: numeric_state
     entity_id: sun.sun
     value_template: '{{ state.attributes.elevation }}'
     below: -2.5
   action:
-    service: switch.turn_on
-    entity_id: switch.living_room_big_lamp
+    - service: switch.turn_on
+      entity_id: 
+      - switch.living_room_big_lamp
+    - service: light.turn_on
+      entity_id: 
+      - light.stairway_light
 
-    
     
 - alias: 'lights out when 10:30 if we are away'
   trigger:
@@ -79,6 +83,9 @@
       - switch.hallway_lamp
       - switch.living_room_small_lamp
       - switch.living_room_big_lamp
+    - service: light.turn_off
+      entity_id: 
+      - light.stairway_light
     
     
 - alias: "Power state on HA start-up"
@@ -225,3 +232,33 @@
       entity_id: 
       - switch.danes_bedside_lamp
       - switch.carls_bedside_lamp
+
+
+#Lights out action
+- alias: "Action Turn Lights Off"
+  initial_state: true
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Lights Out'
+  action:
+    - service: light.turn_off
+      entity_id: group.all_lights
+    - service: switch.turn_off
+      entity_id: group.all_lights
+  
+
+#Lights out action
+- alias: "Action Turn Lights ON"
+  initial_state: true
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Lights On'
+  action:
+    - service: light.turn_on
+      entity_id: group.all_lights
+    - service: switch.turn_on
+      entity_id: group.all_lights
