@@ -36,6 +36,7 @@ all_lights:
         - light.stairway_light
         - switch.danes_bedside_lamp
         - switch.carls_bedside_lamp
+        - light.rgb_light
 
 climate:
     name: Climate
