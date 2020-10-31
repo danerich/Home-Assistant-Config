@@ -78,14 +78,10 @@
     entity_id: 'group.presence'
     state: 'not_home'
   action:
-    - service: switch.turn_off
-      entity_id: 
-      - switch.hallway_lamp
-      - switch.living_room_small_lamp
-      - switch.living_room_big_lamp
     - service: light.turn_off
-      entity_id: 
-      - light.stairway_light
+      entity_id: group.all_lights
+    - service: switch.turn_off
+      entity_id: group.all_lights
     
     
 - alias: "Power state on HA start-up"
@@ -164,6 +160,38 @@
       entity_id: 
       - switch.carls_bedside_lamp
 
+## Turn on lights if home and its dark out.
+- alias: 'Lights on in morning if dark'
+  trigger:
+    platform: time
+    at: "05:55:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: numeric_state
+        entity_id: sun.sun
+        value_template: '{{ state.attributes.elevation }}'
+        below: -2.5
+      - condition: state
+        entity_id: 'group.presence'
+        state: 'home'
+      - condition: time
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+  action:
+    - service: switch.turn_on
+      entity_id: 
+      - switch.hallway_lamp
+      - switch.living_room_small_lamp
+    - service: light.turn_on
+      entity_id: 
+      - light.stairway_light
+      - light.rgb_light
+
 ## Turn on bedside light if home and its dark out.
 ## weekday
 ## is 5:45am
@@ -221,17 +249,17 @@
       entity_id: 
       - switch.carls_bedside_lamp
 
-- alias: 'Bedlights off in morning'
+- alias: 'Lights off in morning when light'
   trigger:
     platform: numeric_state
     entity_id: sun.sun
     value_template: '{{ state.attributes.elevation }}'
     above: -2.5
   action:
+    - service: light.turn_off
+      entity_id: group.all_lights
     - service: switch.turn_off
-      entity_id: 
-      - switch.danes_bedside_lamp
-      - switch.carls_bedside_lamp
+      entity_id: group.all_lights
 
 
 #Lights out action
