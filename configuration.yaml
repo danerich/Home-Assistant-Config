@@ -174,8 +174,6 @@ sensor:
     sensors:
       energy_day_cost:
         friendly_name: 'Energy Day Cost'
-        entity_id:
-          - sensor.energy_daily_day
         value_template: "{{ (states('sensor.energy_daily_day')|float * 0.1684|float)|round(3) }}"
         unit_of_measurement: "£"
 
@@ -185,8 +183,6 @@ sensor:
     sensors:
       energy_night_cost:
         friendly_name: 'Energy Night Cost'
-        entity_id:
-          - sensor.energy_daily_night
         value_template: "{{ (states('sensor.energy_daily_night')|float * 0.07592|float)|round(3) }}"
         unit_of_measurement: "£"
 
@@ -196,9 +192,6 @@ sensor:
     sensors:
       energy_total_cost:
         friendly_name: 'Energy Total Cost'
-        entity_id:
-          - sensor.energy_night_cost
-          - sensor.energy_day_cost
         value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float + 0.20558 )|round(3) }}"
         unit_of_measurement: "£"
 
@@ -208,9 +201,6 @@ sensor:
     sensors:
       total_energy:
         friendly_name: 'Total Energy Used Today'
-        entity_id:
-          - sensor.energy_daily_day
-          - sensor.energy_daily_night
         value_template: "{{ states('sensor.energy_daily_day')|float + states('sensor.energy_daily_night')|float }}"
         unit_of_measurement: "kWh"
 
@@ -222,8 +212,6 @@ sensor:
     sensors:
       monthly_energy_day_cost:
         friendly_name: 'Monthly Energy Day Cost'
-        entity_id:
-          - sensor.energy_monthly_day
         value_template: "{{ (states('sensor.energy_monthly_day')|float * 0.1684|float)|round(3) }}"
         unit_of_measurement: "£"
 
@@ -233,8 +221,6 @@ sensor:
     sensors:
       monthly_energy_night_cost:
         friendly_name: 'Monthly Energy Night Cost'
-        entity_id:
-          - sensor.energy_monthly_night
         value_template: "{{ (states('sensor.energy_monthly_night')|float * 0.07592|float)|round(3) }}"
         unit_of_measurement: "£"
 
@@ -244,9 +230,6 @@ sensor:
     sensors:
       monthly_energy_total_cost:
         friendly_name: 'Monthly Energy Total Cost'
-        entity_id:
-          - sensor.monthly_energy_night_cost
-          - sensor.monthly_energy_day_cost
         value_template: "{{ (states('sensor.monthly_energy_night_cost')|float + states('sensor.monthly_energy_day_cost')|float  + (0.20558 * 30.4375))|round(3) }}"
         unit_of_measurement: "£"
 
@@ -256,9 +239,6 @@ sensor:
     sensors:
       monthly_total_energy:
         friendly_name: 'Total Energy Used Today'
-        entity_id:
-          - sensor.energy_monthly_day
-          - sensor.energy_monthly_night
         value_template: "{{ states('sensor.energy_monthly_day')|float + states('sensor.energy_monthly_night')|float }}"
         unit_of_measurement: "kWh"
 
@@ -266,8 +246,6 @@ sensor:
     sensors:
       outdoor_temperature:
         friendly_name: 'Outdoor Temperature'
-        entity_id:
-          - weather.met_office_colchester
         value_template: "{{ state_attr('weather.met_office_colchester', 'temperature')|float }}"
         unit_of_measurement: "°C"
 
