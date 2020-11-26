@@ -106,3 +106,5 @@ One Dark Theme:
   hacs-status-installed: var(--green)
   hacs-status-not-loaded: var(--red)
   hacs-status-pending-update: var(--yellow)
+
+  paper-item-icon-active-color: "#fdd835"
