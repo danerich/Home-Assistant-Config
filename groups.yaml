@@ -22,9 +22,9 @@ office_light:
 presence:
     name: Presence
     entities:
-      - device_tracker.dane_s_iphone
-      - device_tracker.carl_rutters_iphone
-      - device_tracker.kims_iphone
+      - person.dane
+      - person.carl
+      - person.kim
 
 all_lights:
     name: All Lights

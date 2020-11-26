@@ -327,6 +327,25 @@ zone:
   #   radius: 60
   #   icon: mdi:home
 
+person:
+  - name: Dane
+    id: dane_rich
+    user_id: ff9d2f1a52bf4f0eb1fecdf3b23a6c89
+    device_trackers:
+      - device_tracker.dane_s_iphone
+      - device_tracker.dane_s_iphone_2
+  - name: Carl
+    id: carl_rutter
+    user_id: 76db402665fb42e5ba1bae2860175d6b
+    device_trackers:
+      - device_tracker.carl_rutters_iphone
+      - device_tracker.carl_rutters_iphone_2
+  - name: Kim
+    id: kim_rutter
+    device_trackers:
+      - device_tracker.kims_iphone
+
+
 ios:
 
 notify:
