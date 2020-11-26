@@ -10,14 +10,14 @@ cameras:
 living_lamps:
     name: Lamps
     entities:
-        - switch.hallway_lamp
-        - switch.living_room_small_lamp
-        - switch.living_room_big_lamp
+        - switch.plug_s20_3_relay
+        - switch.plug_s20_1_relay
+        - switch.plug_s20_2_relay
         
 office_light:
     name: Office Light
     entities:
-        - switch.office_light
+        - switch.plug_s20_4_relay
   
 presence:
     name: Presence
@@ -29,13 +29,13 @@ presence:
 all_lights:
     name: All Lights
     entities:
-        - switch.hallway_lamp
-        - switch.living_room_small_lamp
-        - switch.living_room_big_lamp
-        - switch.office_light
+        - switch.plug_s20_3_relay
+        - switch.plug_s20_1_relay
+        - switch.plug_s20_2_relay
+        - switch.plug_s20_4_relay
         - light.stairway_light
-        - switch.danes_bedside_lamp
-        - switch.carls_bedside_lamp
+        - switch.plug_s26_1_relay
+        - switch.plug_s26_2_relay
         - light.rgb_light
 
 climate:

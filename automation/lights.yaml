@@ -6,14 +6,14 @@
     below: -2.5
   action:
     service: switch.turn_on
-    entity_id: switch.office_light
+    entity_id: switch.plug_s20_4_relay
 - alias: 'Office light off when 10:30'
   trigger:
   - platform: time
     at: '22:30:00'
   action:
     service: switch.turn_off
-    entity_id: switch.office_light
+    entity_id: switch.plug_s20_4_relay
     
     
 - alias: 'LR Small lamp on when dark'
@@ -24,7 +24,7 @@
     below: -1.0
   action:
     service: switch.turn_on
-    entity_id: switch.living_room_small_lamp
+    entity_id: switch.plug_s20_1_relay
 
 - alias: 'RGB light on when dark'
   trigger:
@@ -52,7 +52,7 @@
     below: -1.5
   action:
     service: switch.turn_on
-    entity_id: switch.hallway_lamp
+    entity_id: switch.plug_s20_3_relay
 
 - alias: 'Lights on when darkerer'
   trigger:
@@ -63,7 +63,7 @@
   action:
     - service: switch.turn_on
       entity_id: 
-      - switch.living_room_big_lamp
+      - switch.plug_s20_2_relay
     - service: light.turn_on
       entity_id: 
       - light.stairway_light
@@ -119,10 +119,10 @@
   action:
     - service: switch.turn_off
       entity_id: 
-      - switch.hallway_lamp
-      - switch.living_room_small_lamp
-      - switch.living_room_big_lamp
-      - switch.office_light
+      - switch.plug_s20_3_relay
+      - switch.plug_s20_1_relay
+      - switch.plug_s20_2_relay
+      - switch.plug_s20_4_relay
     - service: light.turn_off
       entity_id: 
       - light.rgb_light
@@ -143,7 +143,7 @@
   action:
     - service: switch.toggle
       entity_id: 
-      - switch.danes_bedside_lamp
+      - switch.plug_s26_1_relay
 
 - alias: 'Carl bedside lamp toggle'
   initial_state: true
@@ -158,7 +158,7 @@
   action:
     - service: switch.toggle
       entity_id: 
-      - switch.carls_bedside_lamp
+      - switch.plug_s26_2_relay
 
 ## Turn on lights if home and its dark out.
 - alias: 'Lights on in morning if dark'
@@ -185,8 +185,8 @@
   action:
     - service: switch.turn_on
       entity_id: 
-      - switch.hallway_lamp
-      - switch.living_room_small_lamp
+      - switch.plug_s20_3_relay
+      - switch.plug_s20_1_relay
     - service: light.turn_on
       entity_id: 
       - light.stairway_light
@@ -221,7 +221,7 @@
   action:
     - service: switch.turn_on
       entity_id: 
-      - switch.danes_bedside_lamp
+      - switch.plug_s26_1_relay
 
 - alias: 'Carl bedlight on in morning'
   trigger:
@@ -247,7 +247,7 @@
   action:
     - service: switch.turn_on
       entity_id: 
-      - switch.carls_bedside_lamp
+      - switch.plug_s26_2_relay
 
 - alias: 'Lights off in morning when light'
   trigger:

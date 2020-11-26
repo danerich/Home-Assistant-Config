@@ -321,11 +321,11 @@ zone:
     latitude: !secret dane_work_latitude
     longitude: !secret dane_work_longitude
     icon: mdi:briefcase
-  - name: !secret home_name
-    latitude: !secret home_latitude
-    longitude: !secret home_longitude
-    radius: 60
-    icon: mdi:home
+  # - name: !secret home_name
+  #   latitude: !secret home_latitude
+  #   longitude: !secret home_longitude
+  #   radius: 60
+  #   icon: mdi:home
 
 ios:
 
@@ -384,55 +384,55 @@ light:
     command_off_template: '{"turn": "off"}'
     brightness_template: '{{ (value_json.brightness | float * 2.55) | round(0) }}'
 
-switch:
-  - platform: mqtt
-    name: "Office Light"
-    state_topic: "stat/office_light/RESULT"
-    value_template: '{{ value_json["POWER"] }}'
-    command_topic: "cmnd/office_light/POWER"
-    availability_topic: "tele/office_light/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-  - platform: mqtt
-    name: "Living Room Big Lamp"
-    state_topic: "stat/lr_big_lamp/RESULT"
-    value_template: '{{ value_json["POWER"] }}'
-    command_topic: "cmnd/lr_big_lamp/POWER"
-    availability_topic: "tele/lr_big_lamp/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-  - platform: mqtt
-    name: "Living Room Small Lamp"
-    state_topic: "stat/lr_small_lamp/RESULT"
-    value_template: '{{ value_json["POWER"] }}'
-    command_topic: "cmnd/lr_small_lamp/POWER"
-    availability_topic: "tele/lr_small_lamp/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
-  - platform: mqtt
-    name: "Hallway Lamp"
-    state_topic: "stat/lr_book_lamp/RESULT"
-    value_template: '{{ value_json["POWER"] }}'
-    command_topic: "cmnd/lr_book_lamp/POWER"
-    availability_topic: "tele/lr_book_lamp/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: false
+# switch:
+  # - platform: mqtt
+  #   name: "Office Light"
+  #   state_topic: "stat/office_light/RESULT"
+  #   value_template: '{{ value_json["POWER"] }}'
+  #   command_topic: "cmnd/office_light/POWER"
+  #   availability_topic: "tele/office_light/LWT"
+  #   qos: 1
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   payload_available: "Online"
+  #   payload_not_available: "Offline"
+  #   retain: false
+  # - platform: mqtt
+  #   name: "Living Room Big Lamp"
+  #   state_topic: "stat/lr_big_lamp/RESULT"
+  #   value_template: '{{ value_json["POWER"] }}'
+  #   command_topic: "cmnd/lr_big_lamp/POWER"
+  #   availability_topic: "tele/lr_big_lamp/LWT"
+  #   qos: 1
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   payload_available: "Online"
+  #   payload_not_available: "Offline"
+  #   retain: false
+  # - platform: mqtt
+  #   name: "Living Room Small Lamp"
+  #   state_topic: "stat/lr_small_lamp/RESULT"
+  #   value_template: '{{ value_json["POWER"] }}'
+  #   command_topic: "cmnd/lr_small_lamp/POWER"
+  #   availability_topic: "tele/lr_small_lamp/LWT"
+  #   qos: 1
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   payload_available: "Online"
+  #   payload_not_available: "Offline"
+  #   retain: false
+  # - platform: mqtt
+  #   name: "Hallway Lamp"
+  #   state_topic: "stat/lr_book_lamp/RESULT"
+  #   value_template: '{{ value_json["POWER"] }}'
+  #   command_topic: "cmnd/lr_book_lamp/POWER"
+  #   availability_topic: "tele/lr_book_lamp/LWT"
+  #   qos: 1
+  #   payload_on: "ON"
+  #   payload_off: "OFF"
+  #   payload_available: "Online"
+  #   payload_not_available: "Offline"
+  #   retain: false
 
 homekit:
   auto_start: False
