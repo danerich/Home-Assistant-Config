@@ -80,6 +80,19 @@ history:
       - binary_sensor.living_room_thermostat_is_locked
       - binary_sensor.living_room_thermostat_fan
       - sensor.date
+      - binary_sensor.plug_s20_1_status
+      - binary_sensor.plug_s20_2_status
+      - binary_sensor.plug_s20_3_status
+      - binary_sensor.plug_s20_4_status
+      - binary_sensor.plug_s26_1_status
+      - binary_sensor.plug_s26_2_status
+      - switch.plug_s20_1_restart
+      - switch.plug_s20_2_restart
+      - switch.plug_s20_3_restart
+      - switch.plug_s20_4_restart
+      - switch.plug_s26_1_restart
+      - switch.plug_s26_2_restart
+      - utility_meter.energy_monthly
 
 # View all events in a logbook
 logbook:
@@ -456,12 +469,20 @@ light:
 homekit:
   auto_start: False
   filter:
-    include_domains:
-      - light
-      - switch
-      - media_player
-      - climate
-      - camera
+    include_entities:
+      - switch.plug_s20_3_relay
+      - switch.plug_s20_4_relay
+      - switch.plug_s20_1_relay
+      - switch.plug_s20_2_relay
+      - switch.plug_s26_1_relay
+      - switch.plug_s26_2_relay
+      - camera.front_door
+      - camera.back_garden
+      - light.stairway_light
+      - light.rgb_light
+      - climate.living_room
+      - sensor.outdoor_temperature
+      - sensor.living_room_thermostat_temperature
 
 nest:
   client_id: !secret nest_client_id
