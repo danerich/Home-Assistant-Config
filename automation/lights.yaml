@@ -16,15 +16,19 @@
     entity_id: switch.plug_s20_4_relay
     
     
-- alias: 'LR Small lamp on when dark'
+- alias: 'Lights on when dark'
   trigger:
     platform: numeric_state
     entity_id: sun.sun
     value_template: '{{ state.attributes.elevation }}'
     below: -1.0
   action:
-    service: switch.turn_on
-    entity_id: switch.plug_s20_1_relay
+    - service: switch.turn_on
+      entity_id: switch.plug_s20_1_relay
+    - service: light.turn_on
+      data:
+        entity_id: light.stairway_light
+        brightness: 70
 
 - alias: 'RGB light on when dark'
   trigger:
@@ -37,12 +41,12 @@
     entity_id: 'group.presence'
     state: 'home'
   action:
-    service: light.turn_on
-    data:
-      entity_id: light.rgb_light
-      rgb_color: [255, 218, 108]
-      brightness: 255
-      transition: 15
+    - service: light.turn_on
+      data:
+        entity_id: light.rgb_light
+        rgb_color: [255, 218, 108]
+        brightness: 255
+        transition: 15
 
 - alias: 'LR Bookcase lamp on when darker'
   trigger:
@@ -65,8 +69,10 @@
       entity_id: 
       - switch.plug_s20_2_relay
     - service: light.turn_on
-      entity_id: 
-      - light.stairway_light
+      data:
+        entity_id: light.stairway_light
+        brightness: 120
+        transition: 15
 
     
 - alias: 'lights out when 10:30 if we are away'
@@ -290,3 +296,61 @@
       entity_id: group.all_lights
     - service: switch.turn_on
       entity_id: group.all_lights
+
+
+# turn off big lamp
+# turn off tv
+# turn off med light
+# stairlight to 20%
+# bedlights on
+# delay 5 min
+# turn off rgb light
+# delay 10min
+# turn off stairlight. 
+
+
+#Bedtime Action
+- alias: "Action Bedtime"
+  initial_state: true
+  trigger:
+    - platform: event
+      event_type: ios.action_fired
+      event_data:
+        actionName: 'Bedtime'
+  action:
+    - service: switch.turn_off
+      entity_id: 
+      - switch.plug_s20_2_relay #big lamp
+      - switch.plug_s20_3_relay #med light
+      - switch.plug_s20_4_relay #office
+      - switch.plug_s20_1_relay #small lamp
+    - service: switch.turn_on
+      entity_id: 
+      - switch.plug_s26_1_relay #bed lights
+      - switch.plug_s26_2_relay
+    - service: light.turn_on
+      data:
+        entity_id: light.rgb_light
+        rgb_color: [255, 218, 108]
+        brightness: 255
+        transition: 1
+    - service: light.turn_on
+      data:
+        entity_id: light.stairway_light
+        brightness: 120
+        transition: 15
+    - delay: 0:05
+    - service: light.turn_off
+      data:
+        entity_id: light.rgb_light
+        transition: 15
+    - service: light.turn_on
+      data:
+        entity_id: light.stairway_light
+        brightness: 70
+        transition: 15
+    - delay: 0:05
+    - service: light.turn_off
+      data:
+        entity_id: light.stairway_light
+        transition: 15
