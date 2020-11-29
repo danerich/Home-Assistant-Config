@@ -130,32 +130,32 @@ weather:
   #   api_key: !secret open_weather_map_key
   #   mode: freedaily
 
-shell_command:
-  push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
+# shell_command:
+#   push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
 
 sensor:
   - platform: time_date
     display_options:
     - 'time_utc'
     - 'date'
-  - platform: mqtt
-    name: "Power Usage kW"
-    state_topic: "powermeter/result/"
-    unit_of_measurement: "kW"
-    value_template: "{{ value_json.power_kw }}"
-  - platform: mqtt
-    name: "Energy Usage kWh"
-    state_topic: "powermeter/result/"
-    unit_of_measurement: "kWh"
-    value_template: "{{ value_json.power_kwh }}"
-  - platform: mqtt
-    name: "Download Speed"
-    state_topic: "speedtest/result/download/"
-    unit_of_measurement: "Mbps"
-  - platform: mqtt
-    name: "Upload Speed"
-    state_topic: "speedtest/result/upload/"
-    unit_of_measurement: "Mbps"
+  # - platform: mqtt
+  #   name: "Power Usage kW"
+  #   state_topic: "powermeter/result/"
+  #   unit_of_measurement: "kW"
+  #   value_template: "{{ value_json.power_kw }}"
+  # - platform: mqtt
+  #   name: "Energy Usage kWh"
+  #   state_topic: "powermeter/result/"
+  #   unit_of_measurement: "kWh"
+  #   value_template: "{{ value_json.power_kwh }}"
+  # - platform: mqtt
+  #   name: "Download Speed"
+  #   state_topic: "speedtest/result/download/"
+  #   unit_of_measurement: "Mbps"
+  # - platform: mqtt
+  #   name: "Upload Speed"
+  #   state_topic: "speedtest/result/upload/"
+  #   unit_of_measurement: "Mbps"
   - platform: history_stats
     name: Heating Time On Today
     entity_id: binary_sensor.heating_on
@@ -164,15 +164,15 @@ sensor:
     start: '{{ now().replace(hour=0, minute=0, second=0) }}'
     end: '{{ now() }}'
 
-  - platform: mqtt
-    name: "Stairway Light Power"
-    state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/power"
-    unit_of_measurement: "W"
+  # - platform: mqtt
+  #   name: "Stairway Light Power"
+  #   state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/power"
+  #   unit_of_measurement: "W"
 
-  - platform: mqtt
-    name: "Stairway Light Temperature"
-    state_topic: "shellies/shellydimmer2-E09806966F1F/temperature"
-    unit_of_measurement: "°C"
+  # - platform: mqtt
+  #   name: "Stairway Light Temperature"
+  #   state_topic: "shellies/shellydimmer2-E09806966F1F/temperature"
+  #   unit_of_measurement: "°C"
   
   # Power Meter Totals (p)
   # Day 16.840
@@ -406,15 +406,15 @@ input_boolean:
     icon: mdi:toggle-switch
 
 light:
-  - platform: mqtt
-    schema: template
-    name:  Stairway Light
-    state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/status"
-    state_template: '{% if value_json.ison %} on {% else %} off {% endif %}'
-    command_topic: "shellies/shellydimmer2-E09806966F1F/light/0/set"
-    command_on_template: '{"turn": "on"{% if brightness is defined %}, "brightness": {{(brightness | float * 0.3882 + 1) | round(0)}}{% endif %}}'
-    command_off_template: '{"turn": "off"}'
-    brightness_template: '{{ (value_json.brightness | float * 2.55) | round(0) }}'
+  # - platform: mqtt
+  #   schema: template
+  #   name:  Stairway Light
+  #   state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/status"
+  #   state_template: '{% if value_json.ison %} on {% else %} off {% endif %}'
+  #   command_topic: "shellies/shellydimmer2-E09806966F1F/light/0/set"
+  #   command_on_template: '{"turn": "on"{% if brightness is defined %}, "brightness": {{(brightness | float * 0.3882 + 1) | round(0)}}{% endif %}}'
+  #   command_off_template: '{"turn": "off"}'
+  #   brightness_template: '{{ (value_json.brightness | float * 2.55) | round(0) }}'
 
 # switch:
   # - platform: mqtt

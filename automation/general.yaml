@@ -196,12 +196,12 @@
         message: "The Dropbox 📦 backup has run."
 
 
-- alias: 'Apple Watch Glance'
-  trigger:
-  - minutes: /30
-    platform: time_pattern
-  action:
-    - service: shell_command.push_temp
+# - alias: 'Apple Watch Glance'
+#   trigger:
+#   - minutes: /30
+#     platform: time_pattern
+#   action:
+#     - service: shell_command.push_temp
 
 
 ## Set Theme
