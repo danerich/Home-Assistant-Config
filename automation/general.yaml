@@ -203,6 +203,45 @@
 #   action:
 #     - service: shell_command.push_temp
 
+#Bin Collection to Green
+- alias: 'Change bin collection to green'
+  trigger:
+    platform: time
+    at: "01:00:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - thu
+      - condition: state
+        entity_id: input_select.bin_collection_type
+        state: 'Blue (General)'
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.bin_collection_type
+      option: "Green (Recycling)"
+
+#Bin Collection to blue
+- alias: 'Change bin collection to blue'
+  trigger:
+    platform: time
+    at: "01:00:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - thu
+      - condition: state
+        entity_id: input_select.bin_collection_type
+        state: 'Green (Recycling)'
+  action:
+    service: input_select.select_option
+    data:
+      entity_id: input_select.bin_collection_type
+      option: "Blue (General)"
 
 ## Set Theme
 - alias: 'Set theme at startup'
