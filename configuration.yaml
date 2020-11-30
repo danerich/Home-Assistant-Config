@@ -406,6 +406,12 @@ notify:
     name: heating_log
     filename: /config/www/csv_logs/heating_log.csv
     timestamp: false
+  - name: dane_and_carl
+    platform: group
+    services:
+      - service: mobile_app_dane_s_iphone
+      - service: mobile_app_carl_rutters_iphone
+      - service: mobile_app_danes_macbook_pro
 
 mqtt:
   broker: core-mosquitto

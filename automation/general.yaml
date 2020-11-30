@@ -243,6 +243,46 @@
       entity_id: input_select.bin_collection_type
       option: "Blue (General)"
 
+
+# Bin collection reminder
+- alias: 'Green Bin Collection Reminder'
+  trigger:
+    platform: time
+    at: "19:30:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - tue
+      - condition: state
+        entity_id: input_select.bin_collection_type
+        state: 'Green (Recycling)'
+  action:
+    - service: notify.dane_and_carl
+      data_template:
+        title: '🟢 🗑 Green Bin Collection Tomorrow'
+        message: "The recycling, garden waste and food waste will be picked up tomorrow."
+
+- alias: 'Blue Bin Collection Reminder'
+  trigger:
+    platform: time
+    at: "19:30:00"
+  condition:
+    condition: and 
+    conditions:
+      - condition: time
+        weekday:
+        - tue
+      - condition: state
+        entity_id: input_select.bin_collection_type
+        state: 'Blue (General)'
+  action:
+    - service: notify.dane_and_carl
+      data_template:
+        title: '🔵 🗑 Blue Bin Collection Tomorrow'
+        message: "The general waste, cans and food waste will be picked up tomorrow"
+
 ## Set Theme
 - alias: 'Set theme at startup'
   trigger:
