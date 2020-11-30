@@ -260,7 +260,7 @@
     platform: numeric_state
     entity_id: sun.sun
     value_template: '{{ state.attributes.elevation }}'
-    above: -2.5
+    above: -2.7
   action:
     - service: light.turn_off
       entity_id: group.all_lights
@@ -283,7 +283,7 @@
       entity_id: group.all_lights
   
 
-#Lights out action
+#Lights on action
 - alias: "Action Turn Lights ON"
   initial_state: true
   trigger:
