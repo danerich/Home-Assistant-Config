@@ -80,8 +80,7 @@
     condition: and
     conditions:
       - condition: numeric_state
-        entity_id: 'weather.dark_sky'
-        value_template: '{{ state.attributes.temperature }}'
+        entity_id: 'sensor.outdoor_temperature'
         below: 9
   action:
     - service: climate.set_preset_mode

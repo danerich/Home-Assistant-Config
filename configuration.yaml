@@ -124,8 +124,8 @@ google_assistant:
 system_health:
 
 weather:
-  - platform: darksky
-    api_key: !secret darksky_api_key
+  # - platform: darksky
+  #   api_key: !secret darksky_api_key
   # - platform: openweathermap
   #   api_key: !secret open_weather_map_key
   #   mode: freedaily
