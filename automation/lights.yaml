@@ -194,9 +194,16 @@
       - switch.plug_s20_3_relay
       - switch.plug_s20_1_relay
     - service: light.turn_on
-      entity_id: 
-      - light.stairway_light
-      - light.rgb_light
+      data:
+        entity_id: light.stairway_light
+        brightness: 120
+        transition: 15
+    - service: light.turn_on
+      data:
+        entity_id: light.rgb_light
+        rgb_color: [255, 218, 108]
+        brightness: 255
+        transition: 15
 
 ## Turn on bedside light if home and its dark out.
 ## weekday
