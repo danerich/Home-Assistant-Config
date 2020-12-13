@@ -552,5 +552,6 @@ alarm_control_panel:
     password: !secret yale_alarm_password
 
 group: !include groups.yaml
-automation: !include_dir_merge_list automation/
+automation: !include automations.yaml
+automation split: !include_dir_merge_list automation/
 script: !include scripts.yaml
