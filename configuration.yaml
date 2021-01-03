@@ -134,6 +134,12 @@ weather:
 #   push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
 
 input_select:
+  house_mode:
+  name: House Mode
+  options:
+    - Home
+    - Away
+    - Sleep
   bin_collection_type:
     name: Bin Collection Type
     options:
@@ -551,6 +557,7 @@ alarm_control_panel:
     username: !secret yale_alarm_user
     password: !secret yale_alarm_password
 
+scene: !include scenes.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
 automation split: !include_dir_merge_list automation/
