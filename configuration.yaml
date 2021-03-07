@@ -46,7 +46,7 @@ conversation:
 # Redirect output to Synology NAS Maria DB
 recorder:
   purge_keep_days: 10
-  db_url: !secret db_url
+  #db_url: !secret db_url
   exclude:
     domains:
       - updater
@@ -135,11 +135,11 @@ weather:
 
 input_select:
   house_mode:
-  name: House Mode
-  options:
-    - Home
-    - Away
-    - Sleep
+    name: House Mode
+    options:
+      - Home
+      - Away
+      - Sleep
   bin_collection_type:
     name: Bin Collection Type
     options:
@@ -147,6 +147,13 @@ input_select:
       - Blue (General)
 
 sensor:
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp" # RPi
+#   command: "cat /sys/class/thermal/thermal_zone2/temp" # NUC
+    unit_of_measurement: '°C'
+    value_template: "{{ '%.1f' | format(value | multiply(0.001)) }}" # RPi & NUC
+
   - platform: time_date
     display_options:
     - 'time_utc'
