@@ -24,11 +24,17 @@
     below: -1.0
   action:
     - service: switch.turn_on
-      entity_id: switch.plug_s20_1_relay
+      entity_id: 
+      - switch.plug_s20_1_relay
     - service: light.turn_on
       data:
         entity_id: light.stairway_light
-        brightness: 70
+        brightness_pct: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.track_lights
+        brightness_pct: 20
+        transition: 15
 
 - alias: 'RGB light on when dark'
   trigger:
@@ -74,7 +80,21 @@
         brightness: 120
         transition: 15
 
-    
+- alias: 'Garden Lights on when dark if home'
+  trigger:
+    platform: numeric_state
+    entity_id: sun.sun
+    value_template: '{{ state.attributes.elevation }}'
+    below: -2.5
+  condition:
+  - condition: state
+    entity_id: 'group.presence'
+    state: 'home'
+  action:
+    - service: switch.turn_on
+      entity_id: 
+      - switch.garden_lights
+
 - alias: 'lights out when 10:30 if we are away'
   trigger:
   - platform: time
