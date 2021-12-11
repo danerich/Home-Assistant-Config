@@ -34,6 +34,29 @@
         entity_id: utility_meter.energy_monthly
         tariff: night
 
+## Switch Electricity Cost
+- alias: 'Electricity Cost Switch Day'
+  trigger:
+    - platform: template
+      value_template: "{{ is_state('sensor.time_utc', '07:30') }}"
+  action:
+      service: input_number.set_value
+      target:
+        entity_id: input_number.electric_current_cost
+      data:
+        value: "{{ states('input_number.electric_day_cost') | float }}"
+
+- alias: 'Electricity Cost Switch Night'
+  trigger:
+    - platform: template
+      value_template: "{{ is_state('sensor.time_utc', '00:30') }}"
+  action:
+      service: input_number.set_value
+      target:
+        entity_id: input_number.electric_current_cost
+      data:
+        value: "{{ states('input_number.electric_night_cost') | float }}"
+
 #Save daily energy use to CSV file
 #Date, Energy Day, Energy Day Cost, Energy Night, Energy Night Cost, Energy Total Day, Energy Total Day Cost
 - id: daily_energy_use_message
