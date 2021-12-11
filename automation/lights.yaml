@@ -30,11 +30,12 @@
       data:
         entity_id: light.stairway_light
         brightness_pct: 30
+        transition: 5
     - service: light.turn_on
       data:
         entity_id: light.track_lights
         brightness_pct: 20
-        transition: 15
+        transition: 5
 
 - alias: 'RGB light on when dark'
   trigger:
@@ -71,14 +72,16 @@
     value_template: '{{ state.attributes.elevation }}'
     below: -2.5
   action:
-    - service: switch.turn_on
-      entity_id: 
-      - switch.plug_s20_2_relay
+    - service: light.turn_on
+      data:
+          entity_id: light.big_lamp
+          brightness_pct: 45
+          transition: 5
     - service: light.turn_on
       data:
         entity_id: light.stairway_light
-        brightness: 120
-        transition: 15
+        brightness_pct: 45
+        transition: 5
 
 - alias: 'Garden Lights on when dark if home'
   trigger:
@@ -110,81 +113,81 @@
       entity_id: group.all_lights
     
     
-- alias: "Power state on HA start-up"
-  trigger:
-    platform: homeassistant
-    event: start
-  action:
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/office_light/power1"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/lr_big_lamp/power1"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/lr_small_lamp/power1"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/lr_book_lamp/power1"
-        payload: ""
+# - alias: "Power state on HA start-up"
+#   trigger:
+#     platform: homeassistant
+#     event: start
+#   action:
+#     - service: mqtt.publish
+#       data:
+#         topic: "cmnd/office_light/power1"
+#         payload: ""
+#     - service: mqtt.publish
+#       data:
+#         topic: "cmnd/lr_big_lamp/power1"
+#         payload: ""
+#     - service: mqtt.publish
+#       data:
+#         topic: "cmnd/lr_small_lamp/power1"
+#         payload: ""
+#     - service: mqtt.publish
+#       data:
+#         topic: "cmnd/lr_book_lamp/power1"
+#         payload: ""
 
-- alias: 'Everything off on button press'
-  initial_state: true
-  trigger:
-    - platform: mqtt
-      topic: "tele/sonoffrf/RESULT"
-  condition:
-    condition: and
-    conditions:
-      - condition: template
-        value_template: '{{ trigger.payload_json.RfReceived.Data == "CC44B1" }}'
-  action:
-    - service: switch.turn_off
-      entity_id: 
-      - switch.plug_s20_3_relay
-      - switch.plug_s20_1_relay
-      - switch.plug_s20_2_relay
-      - switch.plug_s20_4_relay
-    - service: light.turn_off
-      entity_id: 
-      - light.rgb_light
-    - service: media_player.turn_off
-      entity_id: media_player.sony_bravia_tv
+# - alias: 'Everything off on button press'
+#   initial_state: true
+#   trigger:
+#     - platform: mqtt
+#       topic: "tele/sonoffrf/RESULT"
+#   condition:
+#     condition: and
+#     conditions:
+#       - condition: template
+#         value_template: '{{ trigger.payload_json.RfReceived.Data == "CC44B1" }}'
+#   action:
+#     - service: switch.turn_off
+#       entity_id: 
+#       - switch.plug_s20_3_relay
+#       - switch.plug_s20_1_relay
+#       - switch.plug_s20_2_relay
+#       - switch.plug_s20_4_relay
+#     - service: light.turn_off
+#       entity_id: 
+#       - light.rgb_light
+#     - service: media_player.turn_off
+#       entity_id: media_player.sony_bravia_tv
 
 #Bedside lamp switch's
-- alias: 'Dane bedside lamp toggle'
-  initial_state: true
-  trigger:
-    - platform: mqtt
-      topic: "tele/sonoffrf/RESULT"
-  condition:
-    condition: and
-    conditions:
-      - condition: template
-        value_template: '{{ trigger.payload_json.RfReceived.Data == "7923E1" }}'
-  action:
-    - service: switch.toggle
-      entity_id: 
-      - switch.plug_s26_1_relay
+# - alias: 'Dane bedside lamp toggle'
+#   initial_state: true
+#   trigger:
+#     - platform: mqtt
+#       topic: "tele/sonoffrf/RESULT"
+#   condition:
+#     condition: and
+#     conditions:
+#       - condition: template
+#         value_template: '{{ trigger.payload_json.RfReceived.Data == "7923E1" }}'
+#   action:
+#     - service: switch.toggle
+#       entity_id: 
+#       - switch.plug_s26_1_relay
 
-- alias: 'Carl bedside lamp toggle'
-  initial_state: true
-  trigger:
-    - platform: mqtt
-      topic: "tele/sonoffrf/RESULT"
-  condition:
-    condition: and
-    conditions:
-      - condition: template
-        value_template: '{{ trigger.payload_json.RfReceived.Data == "ED08B1" }}'
-  action:
-    - service: switch.toggle
-      entity_id: 
-      - switch.plug_s26_2_relay
+# - alias: 'Carl bedside lamp toggle'
+#   initial_state: true
+#   trigger:
+#     - platform: mqtt
+#       topic: "tele/sonoffrf/RESULT"
+#   condition:
+#     condition: and
+#     conditions:
+#       - condition: template
+#         value_template: '{{ trigger.payload_json.RfReceived.Data == "ED08B1" }}'
+#   action:
+#     - service: switch.toggle
+#       entity_id: 
+#       - switch.plug_s26_2_relay
 
 ## Turn on lights if home and its dark out.
 - alias: 'Lights on in morning if dark'
@@ -216,13 +219,13 @@
     - service: light.turn_on
       data:
         entity_id: light.stairway_light
-        brightness: 120
-        transition: 15
+        brightness_pct: 45
+        transition: 5
     - service: light.turn_on
       data:
         entity_id: light.rgb_light
         rgb_color: [255, 218, 108]
-        brightness: 255
+        brightness_pct: 100
         transition: 15
 
 ## Turn on bedside light if home and its dark out.
@@ -287,12 +290,15 @@
     platform: numeric_state
     entity_id: sun.sun
     value_template: '{{ state.attributes.elevation }}'
-    above: -2.7
+    above: -0.68
   action:
     - service: light.turn_off
       entity_id: group.all_lights
     - service: switch.turn_off
       entity_id: group.all_lights
+      ## turn back on the under counter light
+    - service: light.turn_on
+      entity_id: group.under_counter_lights
 
 
 #Lights out action
