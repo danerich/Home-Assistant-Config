@@ -55,8 +55,9 @@
     to: 'not_home'
   action:
     - service: climate.set_preset_mode
+      target:
+        entity_id: climate.hallway
       data:
-        entity_id: climate.living_room
         preset_mode: 'Away and Eco'
         
 #Nest turn on away mode off when we get home
@@ -67,8 +68,9 @@
     to: 'home'
   action:
     - service: climate.set_preset_mode
+      target:
+        entity_id: climate.hallway
       data:
-        entity_id: climate.living_room
         preset_mode: 'none'
         
 #Nest turn off away mode to pre-heat
@@ -84,8 +86,9 @@
         below: 9
   action:
     - service: climate.set_preset_mode
+      target:
+        entity_id: climate.hallway
       data:
-        entity_id: climate.living_room
         preset_mode: 'none'
 
 
@@ -158,10 +161,10 @@
   action:
   - service: notify.heating_log
     data_template:
-      message: "{{ states('sensor.date')  }},{{ states('sensor.heating_time_on_today') }}"
+      message: "{{ states('sensor.date')  }},{{ states('sensor.hallway_heating_time_on_today') }},{{ states('sensor.kitchen_heating_time_on_today') }}"
 
 #Backups
-- alias: 'Run Snapshot Backup'
+- alias: 'Run Backup'
   trigger:
     platform: time
     at: "01:00:00"
@@ -172,7 +175,7 @@
         weekday:
         - mon
   action:
-    - service: script.create_snapshot
+    - service: script.create_backup
 - alias: 'Run Dropbox Backup'
   trigger:
     platform: time
@@ -195,12 +198,13 @@
         message: "The Dropbox 📦 backup has run."
 
 
-# - alias: 'Apple Watch Glance'
-#   trigger:
-#   - minutes: /30
-#     platform: time_pattern
-#   action:
-#     - service: shell_command.push_temp
+- alias: 'Apple Watch Glance'
+  trigger:
+  - minutes: /30
+    platform: time_pattern
+  action:
+    - service: shell_command.push_temp
+
 
 #Bin Collection to Green
 - alias: 'Change bin collection to green'
@@ -283,11 +287,32 @@
         message: "The general waste, cans and food waste will be picked up tomorrow"
 
 ## Set Theme
-- alias: 'Set theme at startup'
+# - alias: 'Set theme at startup'
+#   trigger:
+#     platform: homeassistant
+#     event: start
+#   action:
+#     service: frontend.set_theme
+#     data:
+#       name: Google Dark Theme
+
+
+- alias: 'Set HA theme for day and night'
   trigger:
-    platform: homeassistant
-    event: start
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: sun.sun
+      to: above_horizon
+    - platform: state
+      entity_id: sun.sun
+      to: below_horizon
   action:
-    service: frontend.set_theme
-    data:
-      name: One Dark Theme
+    - service_template: frontend.set_theme
+      data_template:
+        name: >
+          {% if states.sun.sun.state == "above_horizon" %}
+            Google Light Theme
+          {% else %}
+            Google Dark Theme
+          {% endif %}
