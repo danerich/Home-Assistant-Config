@@ -12,12 +12,28 @@ living_lamps:
     entities:
         - switch.plug_s20_3_relay
         - switch.plug_s20_1_relay
-        - switch.plug_s20_2_relay
+        - light.big_lamp
         
 office_light:
     name: Office Light
     entities:
         - switch.plug_s20_4_relay
+
+motion:
+    name: Motion
+    entities:
+      - binary_sensor.motion_bedroom_motion
+      - binary_sensor.motion_hallway_motion
+      - binary_sensor.motion_kitchen_motion
+      - binary_sensor.motion_snug_motion
+
+motion_occupancy:
+    name: Motion Occupancy
+    entities:
+      - binary_sensor.motion_bedroom_occupancy
+      - binary_sensor.motion_hallway_occupancy
+      - binary_sensor.motion_kitchen_occupancy
+      - binary_sensor.motion_snug_occupancy
   
 presence:
     name: Presence
@@ -31,9 +47,15 @@ all_lights:
     entities:
         - switch.plug_s20_3_relay
         - switch.plug_s20_1_relay
-        - switch.plug_s20_2_relay
+        # - switch.plug_s20_2_relay (old big lamp)
         - switch.plug_s20_4_relay
         - light.stairway_light
+        - light.dining_table_light
+        - light.island_lights
+        - light.track_lights
+        - light.under_counter_lights
+        - light.big_lamp
+        - switch.garden_lights
         - switch.plug_s26_1_relay
         - switch.plug_s26_2_relay
         - light.rgb_light
@@ -41,7 +63,8 @@ all_lights:
 climate:
     name: Climate
     entities:
-        - climate.living_room
+        - climate.hallway
+        - climate.kitchen
         
 tv:
     name: TV
