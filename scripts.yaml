@@ -19,10 +19,10 @@ test_tts:
         message: 'Someone is at the front door'
 
 
-create_snapshot:
-  alias: "Create snapshot"
+create_backup:
+  alias: "Create backup"
   sequence:
-    - service: hassio.snapshot_partial
+    - service: hassio.backup_partial
       data_template:
         name: "{{ now().strftime('%Y_%m_%d') }}_hassio"
         addons: 
@@ -42,5 +42,5 @@ create_snapshot:
           - addons/local
     - service: notify.mobile_app_dane_s_iphone
       data_template:
-        title: 'Backup Snapshot'
-        message: "The Snapshot 💾 backup has run."
+        title: 'Backup'
+        message: "💾 backup has run."
