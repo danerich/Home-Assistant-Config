@@ -10,15 +10,20 @@ homeassistant:
   unit_system: metric
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/London
+  currency: GBP
   # Customization file
   customize: !include customize.yaml
 
+
 # Enables the frontend
 frontend:
-  themes: !include_dir_merge_named themes/
+#   themes: !include_dir_merge_named themes/
+  themes: !include_dir_merge_named themes
 
 # Enables configuration UI
 config:
+
+energy:
 
 http:
   # api_password: !secret api_password
@@ -124,29 +129,69 @@ google_assistant:
 system_health:
 
 weather:
-  # - platform: darksky
-  #   api_key: !secret darksky_api_key
-  # - platform: openweathermap
-  #   api_key: !secret open_weather_map_key
-  #   mode: freedaily
 
-# shell_command:
-#   push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
+shell_command:
+  # push_temp: 'curl --data "token=aiigdve5z2tiespj9ya4cboo4ju2g4&user=u2xji4ot4gp4imeobmj6bryhaeemu8&title=Indoor%20Temp&text={{state_attr("climate.living_room", "current_temperature")}}°C{% if is_state("binary_sensor.heating_on", "on") -%}%20(🔥%20{{state_attr("climate.living_room", "temperature")}}°C%20){%- endif %}&subtext={% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}" https://api.pushover.net/1/glances.json'
+  # push_temp: 'curl https://customcomplication.mikelyons.org/complicated/set/9346dc7d/graphicRectangular?value=17%20The%20Glade%0A🌡️%20{{states("sensor.average_temperature")|float}}°C%20•%20⚡%20£{{states("sensor.energy_total_cost")|float}}%0A{% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}'
+  push_temp: 'curl https://customcomplication.mikelyons.org/complicated/set/9346dc7d/graphicRectangular?value=17%20The%20Glade%0A%F0%9F%8C%A1%EF%B8%8F%20{{states("sensor.average_temperature")|float}}%C2%B0C%20%E2%80%A2%20%E2%9A%A1%20%C2%A3{{states("sensor.energy_total_cost")|float}}%0A{% if is_state("group.presence", "home") -%}Home{%- else -%}Away{%- endif %}'
 
 input_select:
-  house_mode:
-    name: House Mode
-    options:
-      - Home
-      - Away
-      - Sleep
   bin_collection_type:
     name: Bin Collection Type
     options:
       - Green (Recycling)
       - Blue (General)
 
+input_number:
+  electric_standing_charge:
+    name: Electric Standing Charge
+    initial: 0.241
+    min: 0
+    max: 1
+    step: 0.001
+    mode: box
+    unit_of_measurement: "GBP/day"
+    icon: mdi:currency-gbp
+  electric_day_cost:
+    name: Electric Day Cost
+    initial: 0.233
+    min: 0
+    max: 1
+    step: 0.001
+    mode: box
+    unit_of_measurement: "GBP/kWh"
+    icon: mdi:currency-gbp
+  electric_night_cost:
+    name: Electric Night Cost
+    initial: 0.123
+    min: 0
+    max: 1
+    step: 0.001
+    mode: box
+    unit_of_measurement: "GBP/kWh"
+    icon: mdi:currency-gbp
+  electric_current_cost:
+    name: Electric Current Cost
+    initial: 0.233
+    min: 0
+    max: 1
+    step: 0.001
+    mode: box
+    unit_of_measurement: "GBP/kWh"
+    icon: mdi:currency-gbp
+
 sensor:
+  - platform: min_max
+    name: Average Temperature
+    type: mean
+    round_digits: 1
+    entity_ids:
+      - sensor.hallway_thermostat_temperature
+      - sensor.kitchen_thermostat_temperature
+      - sensor.bathroom_temperature
+      - sensor.bedroom_temperature
+      - sensor.living_room_temperature
+
   - platform: command_line
     name: CPU Temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp" # RPi
@@ -158,46 +203,22 @@ sensor:
     display_options:
     - 'time_utc'
     - 'date'
-  # - platform: mqtt
-  #   name: "Power Usage kW"
-  #   state_topic: "powermeter/result/"
-  #   unit_of_measurement: "kW"
-  #   value_template: "{{ value_json.power_kw }}"
-  # - platform: mqtt
-  #   name: "Energy Usage kWh"
-  #   state_topic: "powermeter/result/"
-  #   unit_of_measurement: "kWh"
-  #   value_template: "{{ value_json.power_kwh }}"
-  # - platform: mqtt
-  #   name: "Download Speed"
-  #   state_topic: "speedtest/result/download/"
-  #   unit_of_measurement: "Mbps"
-  # - platform: mqtt
-  #   name: "Upload Speed"
-  #   state_topic: "speedtest/result/upload/"
-  #   unit_of_measurement: "Mbps"
   - platform: history_stats
-    name: Heating Time On Today
-    entity_id: binary_sensor.heating_on
+    name: Hallway Heating Time On Today
+    entity_id: binary_sensor.hallway_heating_on
     state: 'on'
     type: time
     start: '{{ now().replace(hour=0, minute=0, second=0) }}'
     end: '{{ now() }}'
 
-  # - platform: mqtt
-  #   name: "Stairway Light Power"
-  #   state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/power"
-  #   unit_of_measurement: "W"
+  - platform: history_stats
+    name: Kitchen Heating Time On Today
+    entity_id: binary_sensor.kitchen_heating_on
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0, minute=0, second=0) }}'
+    end: '{{ now() }}'
 
-  # - platform: mqtt
-  #   name: "Stairway Light Temperature"
-  #   state_topic: "shellies/shellydimmer2-E09806966F1F/temperature"
-  #   unit_of_measurement: "°C"
-  
-  # Power Meter Totals (p)
-  # Day 16.840
-  # Night 7.592
-  # Standing Change 20.558
 
   ############# Daily
 
@@ -207,8 +228,9 @@ sensor:
     sensors:
       energy_day_cost:
         friendly_name: 'Energy Day Cost'
-        value_template: "{{ (states('sensor.energy_daily_day')|float * 0.1684|float)|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.energy_daily_day')|float * states('input_number.electric_day_cost')|float)|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Night Cost
 
@@ -216,8 +238,9 @@ sensor:
     sensors:
       energy_night_cost:
         friendly_name: 'Energy Night Cost'
-        value_template: "{{ (states('sensor.energy_daily_night')|float * 0.07592|float)|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.energy_daily_night')|float * states('input_number.electric_night_cost')|float)|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Total Cost
 
@@ -225,8 +248,9 @@ sensor:
     sensors:
       energy_total_cost:
         friendly_name: 'Energy Total Cost'
-        value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float + 0.20558 )|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.energy_night_cost')|float + states('sensor.energy_day_cost')|float + states('input_number.electric_standing_charge')|float )|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Total Energy Used
 
@@ -236,6 +260,7 @@ sensor:
         friendly_name: 'Total Energy Used Today'
         value_template: "{{ states('sensor.energy_daily_day')|float + states('sensor.energy_daily_night')|float }}"
         unit_of_measurement: "kWh"
+        device_class: energy
 
   ############# Monthly 
 
@@ -245,8 +270,9 @@ sensor:
     sensors:
       monthly_energy_day_cost:
         friendly_name: 'Monthly Energy Day Cost'
-        value_template: "{{ (states('sensor.energy_monthly_day')|float * 0.1684|float)|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.energy_monthly_day')|float * states('input_number.electric_day_cost')|float)|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Night Cost
 
@@ -254,8 +280,9 @@ sensor:
     sensors:
       monthly_energy_night_cost:
         friendly_name: 'Monthly Energy Night Cost'
-        value_template: "{{ (states('sensor.energy_monthly_night')|float * 0.07592|float)|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.energy_monthly_night')|float * states('input_number.electric_night_cost')|float)|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Total Cost
 
@@ -263,17 +290,19 @@ sensor:
     sensors:
       monthly_energy_total_cost:
         friendly_name: 'Monthly Energy Total Cost'
-        value_template: "{{ (states('sensor.monthly_energy_night_cost')|float + states('sensor.monthly_energy_day_cost')|float  + (0.20558 * 30.4375))|round(3) }}"
-        unit_of_measurement: "£"
+        value_template: "{{ (states('sensor.monthly_energy_night_cost')|float + states('sensor.monthly_energy_day_cost')|float  + (states('input_number.electric_standing_charge')|float * 30.4375))|round(2) }}"
+        device_class: monetary
+        unit_of_measurement: GBP
 
   #Total Energy Used
 
   - platform: template
     sensors:
       monthly_total_energy:
-        friendly_name: 'Total Energy Used Today'
+        friendly_name: 'Total Energy Used This Month'
         value_template: "{{ states('sensor.energy_monthly_day')|float + states('sensor.energy_monthly_night')|float }}"
         unit_of_measurement: "kWh"
+        device_class: energy
 
   - platform: template
     sensors:
@@ -281,22 +310,18 @@ sensor:
         friendly_name: 'Outdoor Temperature'
         value_template: "{{ state_attr('weather.met_office_colchester', 'temperature')|float }}"
         unit_of_measurement: "°C"
+        device_class: temperature
 
-
-
-  # - platform: integration
-  #   source: sensor.power_meter
-  #   name: energy_spent
 
 utility_meter:
   energy_daily:
-    source: sensor.daily_energy
+    source: sensor.home_total_energy
     cycle: daily
     tariffs:
     - day
     - night
   energy_monthly:
-    source: sensor.daily_energy
+    source: sensor.home_total_energy
     cycle: monthly
     tariffs:
     - day
@@ -341,6 +366,13 @@ camera:
     username: !secret cctv_username
     password: !secret cctv_password
     authentication: digest
+  - platform: generic
+    name: Garden
+    still_image_url: !secret garden_still
+    stream_source: !secret garden_stream
+    username: !secret cctv_username
+    password: !secret cctv_password
+    authentication: digest
 
 stream:
 
@@ -354,11 +386,6 @@ zone:
     latitude: !secret dane_work_latitude
     longitude: !secret dane_work_longitude
     icon: mdi:briefcase
-  # - name: !secret home_name
-  #   latitude: !secret home_latitude
-  #   longitude: !secret home_longitude
-  #   radius: 60
-  #   icon: mdi:home
 
 person:
   - name: Dane
@@ -377,7 +404,6 @@ person:
     id: kim_rutter
     device_trackers:
       - device_tracker.kims_iphone
-
 
 ios:
   actions:
@@ -431,17 +457,6 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
 
-media_player:
-  - platform: braviatv
-    host: !secret braviatv_ip
-
-tplink:
-  discovery: false
-  switch:
-    - host: !secret tp_schedule_plug
-    - host: !secret tp_dane_bed_light
-    - host: !secret tp_carl_bed_light
-
 input_boolean:
   rf_plug_1:
     name: Big Christmas Tree
@@ -457,97 +472,53 @@ input_boolean:
     icon: mdi:toggle-switch
 
 light:
-  # - platform: mqtt
-  #   schema: template
-  #   name:  Stairway Light
-  #   state_topic: "shellies/shellydimmer2-E09806966F1F/light/0/status"
-  #   state_template: '{% if value_json.ison %} on {% else %} off {% endif %}'
-  #   command_topic: "shellies/shellydimmer2-E09806966F1F/light/0/set"
-  #   command_on_template: '{"turn": "on"{% if brightness is defined %}, "brightness": {{(brightness | float * 0.3882 + 1) | round(0)}}{% endif %}}'
-  #   command_off_template: '{"turn": "off"}'
-  #   brightness_template: '{{ (value_json.brightness | float * 2.55) | round(0) }}'
-
-# switch:
-  # - platform: mqtt
-  #   name: "Office Light"
-  #   state_topic: "stat/office_light/RESULT"
-  #   value_template: '{{ value_json["POWER"] }}'
-  #   command_topic: "cmnd/office_light/POWER"
-  #   availability_topic: "tele/office_light/LWT"
-  #   qos: 1
-  #   payload_on: "ON"
-  #   payload_off: "OFF"
-  #   payload_available: "Online"
-  #   payload_not_available: "Offline"
-  #   retain: false
-  # - platform: mqtt
-  #   name: "Living Room Big Lamp"
-  #   state_topic: "stat/lr_big_lamp/RESULT"
-  #   value_template: '{{ value_json["POWER"] }}'
-  #   command_topic: "cmnd/lr_big_lamp/POWER"
-  #   availability_topic: "tele/lr_big_lamp/LWT"
-  #   qos: 1
-  #   payload_on: "ON"
-  #   payload_off: "OFF"
-  #   payload_available: "Online"
-  #   payload_not_available: "Offline"
-  #   retain: false
-  # - platform: mqtt
-  #   name: "Living Room Small Lamp"
-  #   state_topic: "stat/lr_small_lamp/RESULT"
-  #   value_template: '{{ value_json["POWER"] }}'
-  #   command_topic: "cmnd/lr_small_lamp/POWER"
-  #   availability_topic: "tele/lr_small_lamp/LWT"
-  #   qos: 1
-  #   payload_on: "ON"
-  #   payload_off: "OFF"
-  #   payload_available: "Online"
-  #   payload_not_available: "Offline"
-  #   retain: false
-  # - platform: mqtt
-  #   name: "Hallway Lamp"
-  #   state_topic: "stat/lr_book_lamp/RESULT"
-  #   value_template: '{{ value_json["POWER"] }}'
-  #   command_topic: "cmnd/lr_book_lamp/POWER"
-  #   availability_topic: "tele/lr_book_lamp/LWT"
-  #   qos: 1
-  #   payload_on: "ON"
-  #   payload_off: "OFF"
-  #   payload_available: "Online"
-  #   payload_not_available: "Offline"
-  #   retain: false
 
 homekit:
-  auto_start: False
+  # auto_start: False
   filter:
     include_entities:
       - switch.plug_s20_3_relay
       - switch.plug_s20_4_relay
       - switch.plug_s20_1_relay
-      - switch.plug_s20_2_relay
+      # - switch.plug_s20_2_relay
       - switch.plug_s26_1_relay
       - switch.plug_s26_2_relay
-      - camera.front_door
-      - camera.back_garden
+      # - camera.front_door
+      # - camera.back_garden
       - light.stairway_light
+      - light.dining_table_light
+      - light.island_lights
+      - light.kitchen_spotlights
+      - light.track_lights
+      - light.big_lamp
+      - light.under_counter_lights
+      - switch.garden_lights
       - light.rgb_light
-      - climate.living_room
-      - sensor.outdoor_temperature
-      - sensor.living_room_thermostat_temperature
+      - climate.hallway
+      - climate.kitchen
+      - input_boolean.rf_plug_1
+      - input_boolean.rf_plug_2
 
 nest:
   client_id: !secret nest_client_id
   client_secret: !secret nest_client_secret
 
 # sensor for if heating
-binary_sensor:
-  - platform: template
-    sensors:
-      heating_on:
-        friendly_name: "Heating On"
-        value_template: >-
-          {{ is_state('sensor.living_room_thermostat_hvac_state', 'heat')}}
 
+template:
+  - binary_sensor:
+      - name: Kitchen Heating On
+        state: >
+          {{ is_state('sensor.kitchen_thermostat_hvac_state', 'heat')}}
+  - binary_sensor:
+      - name: Hallway Heating On
+        state: >
+          {{ is_state('sensor.hallway_thermostat_hvac_state', 'heat')}}
+  - binary_sensor:
+      - name: Heating On
+        state: >
+          {{ is_state('binary_sensor.hallway_heating_on', 'on')
+          or is_state('binary_sensor.kitchen_heating_on', 'on')}}
 
 #influx db
 # influxdb:
@@ -559,10 +530,10 @@ binary_sensor:
 #   max_retries: 10
 #   default_measurement: state
 
-alarm_control_panel:
-  - platform: yale_smart_alarm
-    username: !secret yale_alarm_user
-    password: !secret yale_alarm_password
+# alarm_control_panel:
+#   - platform: yale_smart_alarm
+#     username: !secret yale_alarm_user
+#     password: !secret yale_alarm_password
 
 scene: !include scenes.yaml
 group: !include groups.yaml
